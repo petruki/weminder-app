@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.weminder.R
 import com.weminder.data.Task
+import com.weminder.utils.TASK_STATUS
 import kotlinx.android.synthetic.main.item_task.view.*
 
 class TaskListAdapter(
@@ -29,6 +30,9 @@ class TaskListAdapter(
         fun bind(task: Task, listener: OnItemClickListener) {
             with (itemView) {
                 itemView.itemTaskTitle.text = task.title
+
+                val status = TASK_STATUS.filter { list -> list[0] == task.status }[0]
+                taskIcon.setImageResource(status[1] as Int)
                 setOnClickListener { listener.onTaskClick(task) }
             }
         }
