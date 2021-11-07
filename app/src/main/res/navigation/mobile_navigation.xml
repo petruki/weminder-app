@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.weminder.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.weminder.ui.search.SearchGroupFragment"
+        android:label="@string/menu_search"
+        tools:layout="@layout/fragment_search_group" />
+    <fragment
+        android:id="@+id/groupDetailFragment"
+        android:name="com.weminder.ui.group.GroupDetailFragment"
+        android:label="Group Detail"
+        tools:layout="@layout/fragment_group_detail">
+        <argument
+            android:name="groupid"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_groupDetailFragment_to_taskDetailFragment"
+            app:destination="@id/taskDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskDetailFragment"
+        android:name="com.weminder.ui.task.TaskDetailFragment"
+        android:label="Task Detail"
+        tools:layout="@layout/fragment_task_detail" >
+        <argument
+            android:name="taskid"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
