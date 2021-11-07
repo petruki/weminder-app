@@ -30,7 +30,9 @@ class TaskDetailFragment : Fragment() {
         taskViewModel.selected.observe(viewLifecycleOwner, {
             with( binding.root) {
                 // Setup Info
-                txtTaskInfoName.text = it.title
+                txtTaskInfoTitle.text = it.title
+                txtTaskInfoStatus.text = it.status
+                txtTaskInfoContent.text = it.content
 
                 // Setup Content
                 logListAdapter = LogListAdapter(it.log)

@@ -27,7 +27,8 @@ class LogListAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(log: Log) {
             with (itemView) {
-                itemView.itemLogMessage.text = log.message
+                itemLogMessage.text = log.message
+                itemLogCreatedAt.text = log.createdAt
             }
         }
     }

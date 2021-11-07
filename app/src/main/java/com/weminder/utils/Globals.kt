@@ -32,7 +32,7 @@ val MOCK_LOGS_2: List<Log> = listOf(
 )
 
 val MOCK_TASKS: List<Task> = listOf(
-    Task("1", "Task 1", "This is task 1", "Opened", MOCK_LOGS_1, "user1", "1"),
+    Task("1", "Task 1", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book", "Opened", MOCK_LOGS_1, "user1", "1"),
     Task("2", "Task 2", "This is task 2", "In Progress", MOCK_LOGS_2, "user1", "1"),
     Task("3", "Task 3", "This is task 3", "Done", emptyList(), "user1", "2")
 )
