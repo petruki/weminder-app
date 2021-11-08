@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_taskDetailFragment_to_taskEditFragment"
             app:destination="@id/taskEditFragment" />
+        <action
+            android:id="@+id/action_taskDetailFragment_to_taskLogFragment"
+            app:destination="@id/taskLogFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskEditFragment"
@@ -69,6 +72,18 @@
         <argument
             android:name="group"
             app:argType="com.weminder.data.Group" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskLogFragment"
+        android:name="com.weminder.ui.task.fragments.TaskLogFragment"
+        android:label="Log"
+        tools:layout="@layout/fragment_task_log" >
+        <argument
+            android:name="taskid"
+            app:argType="string" />
+        <argument
+            android:name="groupid"
+            app:argType="string" />
     </fragment>
 
 </navigation>

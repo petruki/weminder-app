@@ -48,6 +48,11 @@ class TaskDetailFragment : Fragment() {
                     val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task)
                     findNavController().navigate(action)
                 }
+
+                btnAddLogTask.setOnClickListener {
+                    val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(task.id, task.groupId)
+                    findNavController().navigate(action)
+                }
             }
         })
 
