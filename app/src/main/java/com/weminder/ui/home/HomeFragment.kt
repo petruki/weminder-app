@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.data.Group
 import com.weminder.databinding.FragmentHomeBinding
 import com.weminder.ui.group.GroupListAdapter
+import kotlinx.android.synthetic.main.bottom_bar_layout.*
 
 class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
@@ -25,9 +26,16 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        groupListAdapter = GroupListAdapter(homeViewModel.mockGroups, this)
-        binding.recyclerGroup.adapter = groupListAdapter
-        binding.recyclerGroup.layoutManager = LinearLayoutManager(context)
+        with(binding) {
+            groupListAdapter = GroupListAdapter(homeViewModel.mockGroups, this@HomeFragment)
+            recyclerGroup.adapter = groupListAdapter
+            recyclerGroup.layoutManager = LinearLayoutManager(context)
+
+            includeBottomBar.fabAddGroup.setOnClickListener {
+                val action = HomeFragmentDirections.actionNavHomeToGroupEditFragment(Group())
+                findNavController().navigate(action)
+            }
+        }
 
         return binding.root
     }

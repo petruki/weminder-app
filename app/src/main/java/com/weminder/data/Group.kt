@@ -9,11 +9,11 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "group")
 data class Group(
     @PrimaryKey
-    var id: String,
-    var name: String,
-    var alias: String,
+    var id: String = "",
+    var name: String = "",
+    var alias: String = "",
     var users: List<User>
 ) : Parcelable {
-    constructor(name: String, alias: String):
-        this("", name, alias, emptyList())
+    constructor():
+        this(users = emptyList())
 }
