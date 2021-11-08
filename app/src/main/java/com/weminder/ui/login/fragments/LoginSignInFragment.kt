@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.weminder.DashboardActivity
 import com.weminder.databinding.FragmentLoginSignInBinding
+import com.weminder.ui.login.LoginViewModel
 import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_login_sign_in.*
 
 class LoginSignInFragment : Fragment() {
 
+    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoginSignInBinding
 
     companion object {
@@ -24,16 +27,23 @@ class LoginSignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginSignInBinding.inflate(inflater, container, false)
-        binding.buttonLogin.setOnClickListener { onLogin() }
+        binding.buttonLogin.setOnClickListener { onClickLogin() }
+
+        loginViewModel.userid.observe(viewLifecycleOwner, { onSignIn(it) })
+
         return binding.root
     }
 
-    private fun onLogin() {
+    private fun onClickLogin() {
         val username = textLogin.text.toString()
         val password = textPassword.text.toString()
 
+        loginViewModel.signUp(username, password)
+    }
+
+    private fun onSignIn(userid: String) {
         activity?.let {
-            AppUtils.updateUserId(it, username)
+            AppUtils.updateUserId(it, userid)
             it.finish()
         }
 

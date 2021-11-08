@@ -7,7 +7,7 @@
     tools:context=".ui.login.fragments.LoginSignUpFragment">
 
     <EditText
-        android:id="@+id/textPassword"
+        android:id="@+id/txtSignUpPassword"
         android:layout_width="300sp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -19,12 +19,12 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textUsername"
+        app:layout_constraintTop_toBottomOf="@+id/txtSignUpUsername"
         tools:ignore="TextContrastCheck"
         android:importantForAutofill="no" />
 
     <EditText
-        android:id="@+id/textUsername"
+        android:id="@+id/txtSignUpUsername"
         android:layout_width="300sp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonSignUp"
+        android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -48,7 +48,7 @@
         android:text="Sign Up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSignUpPassword" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
