@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_home_to_groupDetailFragment"
             app:destination="@id/groupDetailFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_groupEditFragment"
+            app:destination="@id/groupEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_search"
@@ -33,6 +36,9 @@
         <action
             android:id="@+id/action_groupDetailFragment_to_taskEditFragment"
             app:destination="@id/taskEditFragment" />
+        <action
+            android:id="@+id/action_groupDetailFragment_to_groupEditFragment"
+            app:destination="@id/groupEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskDetailFragment"
@@ -54,6 +60,15 @@
         <argument
             android:name="task"
             app:argType="com.weminder.data.Task" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupEditFragment"
+        android:name="com.weminder.ui.group.fragments.GroupEditFragment"
+        android:label="Group"
+        tools:layout="@layout/fragment_group_edit" >
+        <argument
+            android:name="group"
+            app:argType="com.weminder.data.Group" />
     </fragment>
 
 </navigation>

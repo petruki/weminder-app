@@ -25,7 +25,7 @@ class TaskEditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         task = args.task
         binding = FragmentTaskEditBinding.inflate(inflater, container, false)
 

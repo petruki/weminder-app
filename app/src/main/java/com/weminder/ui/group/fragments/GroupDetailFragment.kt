@@ -32,10 +32,11 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false)
         loadGroup()
 
-        groupViewModel.selected.observe(viewLifecycleOwner, {
+        groupViewModel.selected.observe(viewLifecycleOwner, { group ->
             with( binding.root) {
                 // Setup Info
-                txtGroupInfoName.text = it.name
+                txtGroupInfoName.text = group.name
+                txtGroupInfoAlias.text = group.alias
 
                 // Setup Content
                 val groupTasks = groupViewModel.mockTasks.filter { it.groupId == args.groupid }
@@ -47,6 +48,11 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 btnAddGroupTask.setOnClickListener {
                     val newTask = Task("1", args.groupid)
                     val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask)
+                    findNavController().navigate(action)
+                }
+
+                btnEditGroup.setOnClickListener {
+                    val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
                     findNavController().navigate(action)
                 }
             }
