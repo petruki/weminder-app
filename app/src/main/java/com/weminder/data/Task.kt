@@ -10,15 +10,18 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "task")
 data class Task(
     @PrimaryKey
-    var id: String,
-    var title: String,
-    var content: String,
-    var status: String,
-    var log: List<Log>,
+    var id: String = "",
+    var title: String = "",
+    var content: String = "",
+    var status: String = "",
+    var log: List<Log> = emptyList(),
 
     @SerializedName("user_id")
     var createdBy: String,
 
     @SerializedName("group_id")
     var groupId: String
-) : Parcelable
+) : Parcelable {
+    constructor(createdBy: String, groupId: String):
+        this(createdBy=createdBy, groupId=groupId, status="Opened")
+}

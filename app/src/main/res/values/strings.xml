@@ -13,4 +13,11 @@
 
     <string name="menu_home">My Groups</string>
     <string name="menu_search">Find Groups</string>
+
+    <array name="task_status">
+        <item>Opened</item>
+        <item>In Progress</item>
+        <item>Blocked</item>
+        <item>Done</item>
+    </array>
 </resources>

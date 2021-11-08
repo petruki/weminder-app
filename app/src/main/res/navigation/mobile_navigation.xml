@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_search_group" />
     <fragment
         android:id="@+id/groupDetailFragment"
-        android:name="com.weminder.ui.group.GroupDetailFragment"
+        android:name="com.weminder.ui.group.fragments.GroupDetailFragment"
         android:label="Group Detail"
         tools:layout="@layout/fragment_group_detail">
         <argument
@@ -30,15 +30,30 @@
         <action
             android:id="@+id/action_groupDetailFragment_to_taskDetailFragment"
             app:destination="@id/taskDetailFragment" />
+        <action
+            android:id="@+id/action_groupDetailFragment_to_taskEditFragment"
+            app:destination="@id/taskEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskDetailFragment"
-        android:name="com.weminder.ui.task.TaskDetailFragment"
+        android:name="com.weminder.ui.task.fragments.TaskDetailFragment"
         android:label="Task Detail"
         tools:layout="@layout/fragment_task_detail" >
         <argument
             android:name="taskid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_taskDetailFragment_to_taskEditFragment"
+            app:destination="@id/taskEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskEditFragment"
+        android:name="com.weminder.ui.task.fragments.TaskEditFragment"
+        android:label="Task"
+        tools:layout="@layout/fragment_task_edit">
+        <argument
+            android:name="task"
+            app:argType="com.weminder.data.Task" />
     </fragment>
 
 </navigation>

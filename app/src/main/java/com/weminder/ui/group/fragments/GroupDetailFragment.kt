@@ -1,4 +1,4 @@
-package com.weminder.ui.group
+package com.weminder.ui.group.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentGroupDetailBinding
+import com.weminder.ui.group.GroupViewModel
 import com.weminder.ui.task.TaskListAdapter
 import kotlinx.android.synthetic.main.group_detail_content.view.*
+import kotlinx.android.synthetic.main.group_detail_controls.view.*
 import kotlinx.android.synthetic.main.group_detail_header.view.*
 
 class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
@@ -40,6 +42,13 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 taskListAdapter = TaskListAdapter(groupTasks, this@GroupDetailFragment)
                 recyclerGroupTasks.adapter = taskListAdapter
                 recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
+
+                // Setup Controls
+                btnAddGroupTask.setOnClickListener {
+                    val newTask = Task("1", args.groupid)
+                    val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask)
+                    findNavController().navigate(action)
+                }
             }
         })
 
@@ -52,7 +61,9 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     override fun onTaskClick(task: Task) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(
+                task.id
+            )
         findNavController().navigate(action)
     }
 }

@@ -1,4 +1,4 @@
-package com.weminder.ui.task
+package com.weminder.ui.task.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.databinding.FragmentTaskDetailBinding
+import com.weminder.ui.task.LogListAdapter
+import com.weminder.ui.task.TaskViewModel
 import kotlinx.android.synthetic.main.task_detail_content.view.*
+import kotlinx.android.synthetic.main.task_detail_controls.view.*
 import kotlinx.android.synthetic.main.task_detail_header.view.*
 
 class TaskDetailFragment : Fragment() {
@@ -27,17 +31,23 @@ class TaskDetailFragment : Fragment() {
         binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
         loadTask()
 
-        taskViewModel.selected.observe(viewLifecycleOwner, {
+        taskViewModel.selected.observe(viewLifecycleOwner, { task ->
             with( binding.root) {
                 // Setup Info
-                txtTaskInfoTitle.text = it.title
-                txtTaskInfoStatus.text = it.status
-                txtTaskInfoContent.text = it.content
+                txtTaskInfoTitle.text = task.title
+                txtTaskInfoStatus.text = task.status
+                txtTaskInfoContent.text = task.content
 
                 // Setup Content
-                logListAdapter = LogListAdapter(it.log)
+                logListAdapter = LogListAdapter(task.log)
                 recyclerTaskLogs.adapter = logListAdapter
                 recyclerTaskLogs.layoutManager = LinearLayoutManager(context)
+
+                // Setup Controls
+                btnEditTask.setOnClickListener {
+                    val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task)
+                    findNavController().navigate(action)
+                }
             }
         })
 
