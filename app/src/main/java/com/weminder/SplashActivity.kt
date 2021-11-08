@@ -24,8 +24,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun onEnter() {
+        val userid = AppUtils.getUserId(this)
+
         finish()
-        startActivity(Intent(this, LoginActivity::class.java))
+
+        if (userid.isEmpty())
+            startActivity(Intent(this, LoginActivity::class.java))
+        else
+            startActivity(Intent(this, DashboardActivity::class.java))
     }
 
 }

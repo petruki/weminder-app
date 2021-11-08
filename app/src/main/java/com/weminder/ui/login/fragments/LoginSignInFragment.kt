@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.weminder.DashboardActivity
 import com.weminder.databinding.FragmentLoginSignInBinding
+import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_login_sign_in.*
 
 class LoginSignInFragment : Fragment() {
@@ -31,7 +32,11 @@ class LoginSignInFragment : Fragment() {
         val username = textLogin.text.toString()
         val password = textPassword.text.toString()
 
-        activity?.finish()
+        activity?.let {
+            AppUtils.updateUserId(it, username)
+            it.finish()
+        }
+
         startActivity(Intent(activity, DashboardActivity::class.java))
     }
 

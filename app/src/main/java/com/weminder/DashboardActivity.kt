@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.weminder.databinding.ActivityDashboardBinding
+import com.weminder.utils.AppUtils
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -49,6 +50,8 @@ class DashboardActivity : AppCompatActivity() {
         when (menuItem.itemId) {
             R.id.action_logout -> {
                 //TODO: Call logout and redirect to login
+                AppUtils.updateUserId(this, "")
+
                 finish()
                 startActivity(Intent(this, LoginActivity::class.java))
             }

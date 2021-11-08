@@ -6,6 +6,8 @@ import com.weminder.data.Log
 import com.weminder.data.Task
 import java.util.*
 
+val USER_ID = "USER_ID"
+
 val TASK_STATUS: List<List<Any>> = listOf(
     listOf("Opened", R.drawable.icon_task_open),
     listOf("In Progress", R.drawable.icon_task_progress),
