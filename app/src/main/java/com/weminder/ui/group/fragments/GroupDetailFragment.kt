@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weminder.data.Group
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentGroupDetailBinding
 import com.weminder.ui.group.GroupViewModel
@@ -45,16 +46,9 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
 
                 // Setup Controls
-                btnAddGroupTask.setOnClickListener {
-                    val newTask = Task("1", args.groupid)
-                    val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask)
-                    findNavController().navigate(action)
-                }
-
-                btnEditGroup.setOnClickListener {
-                    val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
-                    findNavController().navigate(action)
-                }
+                btnAddGroupTask.setOnClickListener { onAddGroupTask() }
+                btnEditGroup.setOnClickListener { onEditGroup(group) }
+                btnLeaveGroup.setOnClickListener { onLeaveGroup() }
             }
         })
 
@@ -66,10 +60,23 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         groupViewModel.selectGroup(group[0])
     }
 
+    private fun onAddGroupTask() {
+        val newTask = Task("1", args.groupid)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask)
+        findNavController().navigate(action)
+    }
+
+    private fun onEditGroup(group: Group) {
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
+        findNavController().navigate(action)
+    }
+
+    private fun onLeaveGroup() {
+        findNavController().navigateUp()
+    }
+
     override fun onTaskClick(task: Task) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(
-                task.id
-            )
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id)
         findNavController().navigate(action)
     }
 }

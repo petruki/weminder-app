@@ -21,7 +21,11 @@
         android:id="@+id/nav_search"
         android:name="com.weminder.ui.search.SearchGroupFragment"
         android:label="@string/menu_search"
-        tools:layout="@layout/fragment_search_group" />
+        tools:layout="@layout/fragment_search_group" >
+        <action
+            android:id="@+id/action_nav_search_to_groupDetailFragment"
+            app:destination="@id/groupDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/groupDetailFragment"
         android:name="com.weminder.ui.group.fragments.GroupDetailFragment"

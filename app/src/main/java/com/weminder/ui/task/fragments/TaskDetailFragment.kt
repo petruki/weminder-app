@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskDetailBinding
 import com.weminder.ui.task.LogListAdapter
 import com.weminder.ui.task.TaskViewModel
@@ -44,15 +45,9 @@ class TaskDetailFragment : Fragment() {
                 recyclerTaskLogs.layoutManager = LinearLayoutManager(context)
 
                 // Setup Controls
-                btnEditTask.setOnClickListener {
-                    val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task)
-                    findNavController().navigate(action)
-                }
-
-                btnAddLogTask.setOnClickListener {
-                    val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(task.id, task.groupId)
-                    findNavController().navigate(action)
-                }
+                btnEditTask.setOnClickListener { onEditTask(task) }
+                btnAddLogTask.setOnClickListener { onAddLogTask(task) }
+                btnDeleteTask.setOnClickListener { onDeleteTask(task) }
             }
         })
 
@@ -62,5 +57,19 @@ class TaskDetailFragment : Fragment() {
     private fun loadTask() {
         val task = taskViewModel.mockTasks.filter { it.id == args.taskid }
         taskViewModel.selectTask(task[0])
+    }
+
+    private fun onEditTask(task: Task) {
+        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task)
+        findNavController().navigate(action)
+    }
+
+    private fun onAddLogTask(task: Task) {
+        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(task.id, task.groupId)
+        findNavController().navigate(action)
+    }
+
+    private fun onDeleteTask(task: Task) {
+        findNavController().navigateUp()
     }
 }
