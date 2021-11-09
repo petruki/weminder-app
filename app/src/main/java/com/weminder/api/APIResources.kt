@@ -11,10 +11,13 @@ interface APIResources {
     @GET("/")
     fun check(): Call<Map<String, String>>
 
+    @GET("/me")
+    fun me(): Call<User>
+
     @POST("/login")
-    fun login(@Body user: User): Call<Map<String, String>>
+    fun login(@Body user: User): Call<User>
 
     @POST("/signup")
-    fun signup(@Body user: User): Call<Map<String, String>>
+    fun signup(@Body user: User): Call<User>
 
 }

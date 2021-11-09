@@ -9,6 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = "task")
 data class Task(
+    @SerializedName("_id")
     @PrimaryKey
     var id: String = "",
     var title: String = "",

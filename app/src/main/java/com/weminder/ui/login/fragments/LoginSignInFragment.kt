@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.weminder.DashboardActivity
+import com.weminder.data.User
 import com.weminder.databinding.FragmentLoginSignInBinding
 import com.weminder.ui.login.LoginViewModel
 import com.weminder.utils.AppUtils
@@ -29,7 +30,7 @@ class LoginSignInFragment : Fragment() {
         binding = FragmentLoginSignInBinding.inflate(inflater, container, false)
         binding.buttonLogin.setOnClickListener { onClickLogin() }
 
-        loginViewModel.userid.observe(viewLifecycleOwner, { onSignIn(it) })
+        loginViewModel.user.observe(viewLifecycleOwner, { onSignIn(it) })
 
         return binding.root
     }
@@ -38,12 +39,12 @@ class LoginSignInFragment : Fragment() {
         val username = textLogin.text.toString()
         val password = textPassword.text.toString()
 
-        loginViewModel.signUp(username, password)
+        loginViewModel.singIn(username, password)
     }
 
-    private fun onSignIn(userid: String) {
+    private fun onSignIn(user: User) {
         activity?.let {
-            AppUtils.updateUserId(it, userid)
+            AppUtils.updateUserId(it, user.id)
             it.finish()
         }
 
