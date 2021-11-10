@@ -1,9 +1,46 @@
 <resources>
     <string name="app_name">WeMinder</string>
     <string name="app_preferences_file_key">WEMINDER_PREFS</string>
+    <string name="description">TODO</string>
 
     <string name="menu_home">My Groups</string>
     <string name="menu_search">Find Groups</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="enter">Enter</string>
+    <string name="info">Info</string>
+    <string name="name">Name</string>
+    <string name="alias">Alias</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="search">Search</string>
+    <string name="group_alias">Group Alias</string>
+    <string name="title">Title</string>
+    <string name="content">Content</string>
+    <string name="status">Status</string>
+    <string name="message">Message</string>
+    <string name="add">Add</string>
+    <string name="tasks">Tasks</string>
+    <string name="edit">Edit</string>
+    <string name="leave">Leave</string>
+    <string name="add_task">Add Task</string>
+    <string name="weminder_v1_0">WeMinder v1.0</string>
+    <string name="sample_username">username</string>
+    <string name="logs">Logs</string>
+    <string name="delete">Delete</string>
+    <string name="add_log">Add Log</string>
+    <string name="logout">Logout</string>
+
+    <string name="sample_group_name">[GROUP NAME]</string>
+    <string name="sample_group_alias">[GROUP ALIAS]</string>
+    <string name="sample_message">[MESSAGE]</string>
+    <string name="sample_date">[10/10/2021]</string>
+    <string name="sample_task_name">[TASK NAME]</string>
+    <string name="sample_task_content">[TASK CONTENT]</string>
+    <string name="sample_task_status">[TASK STATUS]</string>
 
     <array name="task_status">
         <item>Opened</item>

@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/panel_header_rounded"
-        android:text="Search"
+        android:text="@string/search"
         android:textAlignment="center"
         android:textColor="?attr/actionModeSplitBackground"
         android:textSize="18sp"
@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Group Alias"
+        android:text="@string/group_alias"
+        android:labelFor="@id/txtSearchGroupAlias"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelSearchGroupInfo" />
 
@@ -38,6 +39,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:importantForAutofill="no"
+        android:inputType="text"
         android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
@@ -45,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearchGroup"
@@ -64,8 +67,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Search"
+        android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSearchGroupAlias" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSearchGroupAlias"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

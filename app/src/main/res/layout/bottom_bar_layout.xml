@@ -22,6 +22,7 @@
         app:elevation="0dp"
         app:layout_anchor="@id/bottomAppBar"
         app:srcCompat="@drawable/ic_add_circle_outline_24"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        android:contentDescription="@string/description" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
