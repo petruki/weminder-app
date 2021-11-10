@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -14,9 +15,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.weminder.api.SocketHandler
+import com.weminder.api.WEvent
+import com.weminder.data.User
 import com.weminder.databinding.ActivityDashboardBinding
 import com.weminder.ui.login.LoginViewModel
 import com.weminder.utils.AppUtils
+import kotlinx.android.synthetic.main.nav_header_dashboard.*
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -47,7 +52,7 @@ class DashboardActivity : AppCompatActivity() {
             navHeader.findViewById<TextView>(R.id.txtUsername).text = it.username
         })
 
-        loginViewModel.me()
+        setupSocket()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,9 +72,34 @@ class DashboardActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(menuItem)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketHandler.disconnect()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_dashboard)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun setupSocket() {
+        SocketHandler.initSocket(this)
+
+        val client = SocketHandler.getClient()
+        with(client) {
+            on(WEvent.ON_ME.arg) { onMe(it) }
+            emit(WEvent.ME.arg)
+        }
+    }
+
+    private fun onMe(arg: Array<Any>) {
+        this.runOnUiThread {
+            val user = SocketHandler.getDTO(User::class.java, arg)
+            Toast.makeText(this, "Hello ${user.username}", Toast.LENGTH_SHORT).show()
+
+            txtUsername.text = user.username
+            SocketHandler.getClient().disconnect()
+        }
     }
 
 }

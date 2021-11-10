@@ -11,9 +11,6 @@ interface APIResources {
     @GET("/")
     fun check(): Call<Map<String, String>>
 
-    @GET("/me")
-    fun me(): Call<User>
-
     @POST("/login")
     fun login(@Body user: User): Call<User>
 

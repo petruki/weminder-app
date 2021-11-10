@@ -11,11 +11,14 @@ import kotlinx.android.parcel.Parcelize
 data class User(
     @SerializedName("_id")
     @PrimaryKey
-    var id: String,
-    var username: String,
-    var password: String,
-    var email: String
+    var id: String = "",
+    var username: String = "",
+    var password: String = "",
+    var email: String = ""
 ) : Parcelable {
     constructor(username: String, password: String):
         this(id="",username = username, password = password, email="")
+
+    constructor(id: String):
+        this(id=id, email = "")
 }

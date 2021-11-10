@@ -1,5 +1,6 @@
 package com.weminder.ui.login
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.weminder.api.APIResources
@@ -12,7 +13,7 @@ import retrofit2.Response
 class LoginViewModel : ViewModel() {
 
     private val api: APIResources = WeminderAPI.api()
-    val user : MutableLiveData<User> = MutableLiveData<User>()
+    val user: MutableLiveData<User> = MutableLiveData<User>()
 
     fun signUp(username: String, password: String) {
         val request = api.signup(User(username, password))
@@ -24,7 +25,7 @@ class LoginViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-                throw Exception("Unable to Sign Up")
+                t.message?.let { Log.e("SIGN_UP", it) }
             }
         })
     }
@@ -39,24 +40,9 @@ class LoginViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-                throw Exception("Unable to Sign In")
+                t.message?.let { Log.e("SIGN_IN", it) }
             }
 
-        })
-    }
-
-    fun me() {
-        val request = api.me()
-
-        request.enqueue(object : Callback<User>{
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (response.code() == 200)
-                    user.postValue(response.body())
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                throw Exception("Unable to load user")
-            }
         })
     }
 }
