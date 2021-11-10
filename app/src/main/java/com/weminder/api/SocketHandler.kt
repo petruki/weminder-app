@@ -6,6 +6,7 @@ import com.weminder.BuildConfig
 import com.weminder.utils.AppUtils
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import java.net.URISyntaxException
 
 object SocketHandler {
@@ -44,7 +45,20 @@ object SocketHandler {
         socket.disconnect()
     }
 
+    @Synchronized
+    fun emit(event: WEvent, args: Any?) {
+        if (args != null)
+            getClient().emit(event.arg, gson.toJson(args))
+        else
+            getClient().emit(event.arg)
+    }
+
+    @Synchronized
+    fun subscribe(event: WEvent, listener: Emitter.Listener) {
+        getClient().on(event.arg, listener)
+    }
+
     fun <T> getDTO(dtoType: Class<T>, vararg args: Any): T {
-        return SocketHandler.gson.fromJson((args[0] as Array<*>)[0].toString(), dtoType)
+        return gson.fromJson((args[0] as Array<*>)[0].toString(), dtoType)
     }
 }

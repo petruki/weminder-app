@@ -84,12 +84,8 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setupSocket() {
         SocketHandler.initSocket(this)
-
-        val client = SocketHandler.getClient()
-        with(client) {
-            on(WEvent.ON_ME.arg) { onMe(it) }
-            emit(WEvent.ME.arg)
-        }
+        SocketHandler.subscribe(WEvent.ON_ME) { onMe(it) }
+        SocketHandler.emit(WEvent.ME, null)
     }
 
     private fun onMe(arg: Array<Any>) {
@@ -98,7 +94,7 @@ class DashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "Hello ${user.username}", Toast.LENGTH_SHORT).show()
 
             txtUsername.text = user.username
-            SocketHandler.getClient().disconnect()
+            SocketHandler.disconnect()
         }
     }
 

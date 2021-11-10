@@ -10,17 +10,17 @@ import java.lang.reflect.Type
 class Converter {
 
     @TypeConverter
-    fun fromUserList(users: List<User>): String {
+    fun fromUserList(users: List<String>): String {
         val gson = Gson()
         val type: Type = object : TypeToken<List<User>>() {}.type
         return gson.toJson(users, type)
     }
 
     @TypeConverter
-    fun toUserList(users: String): List<User> {
+    fun toUserList(users: String): List<String> {
         val gson = Gson()
         val type =
-            object : TypeToken<List<User>>() {}.type
+            object : TypeToken<List<String>>() {}.type
         return gson.fromJson(users, type)
     }
 

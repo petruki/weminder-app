@@ -14,8 +14,11 @@ data class Group(
     var id: String = "",
     var name: String = "",
     var alias: String = "",
-    var users: List<User>
+    var users: List<String>
 ) : Parcelable {
     constructor():
         this(users = emptyList())
+
+    constructor(name: String, alias: String):
+        this("",name,alias, emptyList())
 }
