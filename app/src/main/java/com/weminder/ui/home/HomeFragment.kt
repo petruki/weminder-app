@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.data.Group
 import com.weminder.databinding.FragmentHomeBinding
 import com.weminder.ui.group.GroupListAdapter
+import com.weminder.ui.group.GroupViewModel
 import kotlinx.android.synthetic.main.bottom_bar_layout.*
 
 class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val groupViewModel: GroupViewModel by viewModels()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var groupListAdapter: GroupListAdapter
 
@@ -27,9 +28,12 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         with(binding) {
-            groupListAdapter = GroupListAdapter(homeViewModel.mockGroups, this@HomeFragment)
-            recyclerGroup.adapter = groupListAdapter
-            recyclerGroup.layoutManager = LinearLayoutManager(context)
+
+            groupViewModel.getAllGroups()?.observe(viewLifecycleOwner, {
+                groupListAdapter = GroupListAdapter(it, this@HomeFragment)
+                recyclerGroup.adapter = groupListAdapter
+                recyclerGroup.layoutManager = LinearLayoutManager(context)
+            })
 
             includeBottomBar.fabAddGroup.setOnClickListener {
                 val action = HomeFragmentDirections.actionNavHomeToGroupEditFragment(Group())

@@ -1,19 +1,38 @@
 package com.weminder.ui.group
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.weminder.data.Group
 import com.weminder.data.Task
-import com.weminder.utils.MOCK_GROUPS
-import com.weminder.utils.MOCK_TASKS
+import com.weminder.db.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class GroupViewModel : ViewModel() {
+class GroupViewModel(app: Application) : AndroidViewModel(app) {
 
+    private val database = AppDatabase.getInstance(app)
     var selected : MutableLiveData<Group> = MutableLiveData<Group>()
-    val mockGroups: List<Group> = MOCK_GROUPS
-    val mockTasks: List<Task> = MOCK_TASKS
+    var groupTasks : MutableLiveData<List<Task>> = MutableLiveData<List<Task>>()
 
-    fun selectGroup(group: Group) {
-        selected?.postValue(group)
+    fun getAllGroups() = database?.groupDao()?.getAllGroups()
+
+    fun insert(group: Group) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.groupDao()?.insert(group)
+            }
+        }
+    }
+
+    fun selectGroup(groupId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                selected.postValue(database?.groupDao()?.getGroup(groupId))
+                groupTasks.postValue(database?.taskDao()?.getGroupTasks(groupId))
+            }
+        }
     }
 }

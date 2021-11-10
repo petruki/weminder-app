@@ -39,7 +39,6 @@ class GroupEditFragment : Fragment() {
             btnGroupSave.setOnClickListener { onSave() }
         }
 
-        setupSocket()
         return binding.root
     }
 
@@ -49,6 +48,8 @@ class GroupEditFragment : Fragment() {
     }
 
     private fun onSave() {
+        setupSocket()
+
         group.name = txtGroupName.text.toString()
         group.alias = txtGroupAlias.text.toString()
 
@@ -72,6 +73,7 @@ class GroupEditFragment : Fragment() {
     private fun onCreateGroup(arg: Array<Any>) {
         requireActivity().runOnUiThread {
             val group = SocketHandler.getDTO(Group::class.java, arg)
+            groupViewModel.insert(group)
 
             Toast.makeText(context, "Group ${group.name} Created", Toast.LENGTH_SHORT).show()
             SocketHandler.getClient().disconnect()

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weminder.api.SocketHandler
 import com.weminder.data.Group
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentGroupDetailBinding
@@ -31,7 +32,6 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false)
-        loadGroup()
 
         groupViewModel.selected.observe(viewLifecycleOwner, { group ->
             with( binding.root) {
@@ -40,10 +40,11 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 txtGroupInfoAlias.text = group.alias
 
                 // Setup Content
-                val groupTasks = groupViewModel.mockTasks.filter { it.groupId == args.groupid }
-                taskListAdapter = TaskListAdapter(groupTasks, this@GroupDetailFragment)
-                recyclerGroupTasks.adapter = taskListAdapter
-                recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
+                groupViewModel.groupTasks.observe(viewLifecycleOwner, {
+                    taskListAdapter = TaskListAdapter(it, this@GroupDetailFragment)
+                    recyclerGroupTasks.adapter = taskListAdapter
+                    recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
+                })
 
                 // Setup Controls
                 btnAddGroupTask.setOnClickListener { onAddGroupTask() }
@@ -52,12 +53,18 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
             }
         })
 
+        groupViewModel.selectGroup(args.groupid)
+        setupSocket()
         return binding.root
     }
 
-    private fun loadGroup() {
-        val group = groupViewModel.mockGroups.filter { it.id == args.groupid }
-        groupViewModel.selectGroup(group[0])
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketHandler.disconnect()
+    }
+
+    private fun setupSocket() {
+        SocketHandler.initSocket(requireContext())
     }
 
     private fun onAddGroupTask() {
@@ -79,4 +86,5 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id)
         findNavController().navigate(action)
     }
+
 }
