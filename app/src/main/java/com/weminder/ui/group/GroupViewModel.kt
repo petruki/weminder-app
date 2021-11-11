@@ -26,21 +26,53 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun syncAllGroups(sync: List<Group>) {
+    fun syncAllGroups(remoteGroups: List<Group>) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                groups.postValue(sync)
+                groups.postValue(remoteGroups)
 
-                val allGroups = database?.groupDao()?.getAllGroups()
-                sync.forEach {
+                // Sync existing groups
+                val localGroups = database?.groupDao()?.getAllGroups()
+                remoteGroups.forEach { remote ->
                     var new = true
-                    allGroups?.forEach { g ->
-                        if (g.id == it.id) {
+                    localGroups?.forEach { local ->
+                        if (local.id == remote.id) {
                             new = false
-                            if (g != it) database?.groupDao()?.update(it)
+                            if (local != remote) database?.groupDao()?.update(remote)
                         }
                     }
-                    if (new) database?.groupDao()?.insert(it)
+                    if (new) database?.groupDao()?.insert(remote)
+                }
+            }
+        }
+    }
+
+    fun syncAllGroupTasks(remoteTasks: List<Task>, groupId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                groupTasks.postValue(remoteTasks)
+
+                // Sync existing tasks
+                val localGroupTasks = database?.taskDao()?.getGroupTasks(groupId)
+                remoteTasks.forEach { remote ->
+                    var new = true
+                    localGroupTasks?.forEach { local ->
+                        if (local.id == remote.id) {
+                            new = false
+                            if (local != remote) database?.taskDao()?.update(remote)
+                        }
+                    }
+                    if (new) database?.taskDao()?.insert(remote)
+                }
+
+                // Sync deleted tasks
+                localGroupTasks?.forEach { local ->
+                    var deleted = true
+                    remoteTasks.forEach { remote ->
+                        if (local.id == remote.id)
+                            deleted = false
+                    }
+                    if (deleted) database?.taskDao()?.delete(local)
                 }
             }
         }

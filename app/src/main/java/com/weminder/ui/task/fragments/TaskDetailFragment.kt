@@ -12,7 +12,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.api.SocketHandler
 import com.weminder.api.WEvent
+import com.weminder.api.dto.Error
 import com.weminder.api.dto.GroupId
+import com.weminder.api.dto.TaskId
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskDetailBinding
 import com.weminder.ui.task.LogListAdapter
@@ -55,7 +57,7 @@ class TaskDetailFragment : Fragment() {
             }
         })
 
-        taskViewModel.selectTask(args.taskid)
+        taskViewModel.selectTask(args.task.id)
         setupSocket()
 
         return binding.root
@@ -65,8 +67,16 @@ class TaskDetailFragment : Fragment() {
         SocketHandler.initSocket(requireContext())
         SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
 
+        // Sync Events
+        SocketHandler.subscribe(WEvent.ON_GET_TASK) { onSyncTask(it) }
+
+        // Listener Events
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
+        SocketHandler.subscribe(WEvent.ON_ERROR) { onError(it) }
+
+        // Triggers sync task
+        SocketHandler.emit(WEvent.GET_TASK, TaskId(args.task.id))
     }
 
     private fun editTask(task: Task) {
@@ -103,6 +113,27 @@ class TaskDetailFragment : Fragment() {
 
                 Toast.makeText(context, "Task ${task.title} has been deleted", Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
+            }
+    }
+
+    private fun onSyncTask(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                taskViewModel.update(task)
+            }
+    }
+
+    private fun onError(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val error = SocketHandler.getDTO(Error::class.java, arg)
+                if (error.status == 404) {
+                    taskViewModel.delete(args.task)
+
+                    Toast.makeText(context, "Task ${args.task.title} has been deleted", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
+                }
             }
     }
 }

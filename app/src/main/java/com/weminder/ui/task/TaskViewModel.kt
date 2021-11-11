@@ -17,8 +17,6 @@ class TaskViewModel(app: Application) : AndroidViewModel(app) {
     var selected : MutableLiveData<Task> = MutableLiveData<Task>()
     var taskLogs : MutableLiveData<List<Log>> = MutableLiveData<List<Log>>()
 
-    fun getAllTaskByGroupId(groupId: String) = database?.taskDao()?.getGroupTasks(groupId)
-
     fun insert(task: Task) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -31,6 +29,7 @@ class TaskViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 database?.taskDao()?.update(task)
+                selected.postValue(task)
             }
         }
     }

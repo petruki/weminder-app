@@ -56,6 +56,9 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                     recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
                 })
 
+                // Sync Tasks
+                SocketHandler.emit(WEvent.LIST_TASKS, GroupId(selectedGroup.id))
+
                 // Setup Controls
                 btnAddGroupTask.setOnClickListener { onAddGroupTask() }
                 btnEditGroup.setOnClickListener { onEditGroup(group) }
@@ -79,14 +82,18 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         SocketHandler.initSocket(requireContext())
         SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(selectedGroup.id))
 
+        // Sync Events
         SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onSyncGroup(it) }
+        SocketHandler.subscribe(WEvent.ON_LIST_TASKS) { onSyncGroupTasks(it) }
+
+        // Listener Events
         SocketHandler.subscribe(WEvent.ON_UPDATE_GROUP) { onUpdateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_LEAVE_GROUP) { onLeaveGroup(it) }
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
 
-        // sync group
+        // Trigger sync group
         SocketHandler.emit(WEvent.FIND_GROUP, GroupId(selectedGroup.id))
     }
 
@@ -108,7 +115,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     override fun onTaskClick(task: Task) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id, selectedGroup.id)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(selectedGroup.id, task)
         findNavController().navigate(action)
     }
 
@@ -170,6 +177,14 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
             requireActivity().runOnUiThread {
                 val group = SocketHandler.getDTO(Group::class.java, arg)
                 groupViewModel.update(group)
+            }
+    }
+
+    private fun onSyncGroupTasks(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val tasks = SocketHandler.getDTOTaskList(arg)
+                groupViewModel.syncAllGroupTasks(tasks, selectedGroup.id)
             }
     }
 
