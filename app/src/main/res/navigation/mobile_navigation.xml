@@ -67,6 +67,9 @@
         <argument
             android:name="task"
             app:argType="com.weminder.data.Task" />
+        <argument
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/groupEditFragment"

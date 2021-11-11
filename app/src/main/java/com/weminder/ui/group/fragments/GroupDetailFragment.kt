@@ -83,7 +83,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private fun onAddGroupTask() {
         val newTask = Task(AppUtils.getUserId(requireContext()), args.groupid)
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, args.groupid)
         findNavController().navigate(action)
     }
 

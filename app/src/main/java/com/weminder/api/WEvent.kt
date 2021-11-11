@@ -14,7 +14,10 @@ enum class WEvent(val arg: String) {
     LEAVE_GROUP("leave_group"),
     ON_LEAVE_GROUP("on_leave_group"),
 
+    CREATE_TASK("create_task"),
     ON_CREATE_TASK("on_create_task"),
+    UPDATE_TASK("update_task"),
+    ON_UPDATE_TASK("on_update_task"),
 
     ON_ERROR("on_error")
 }
