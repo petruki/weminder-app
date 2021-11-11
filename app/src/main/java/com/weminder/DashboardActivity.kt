@@ -21,6 +21,7 @@ import com.weminder.data.User
 import com.weminder.databinding.ActivityDashboardBinding
 import com.weminder.ui.login.LoginViewModel
 import com.weminder.utils.AppUtils
+import com.weminder.utils.USER_NAME
 import kotlinx.android.synthetic.main.nav_header_dashboard.*
 
 class DashboardActivity : AppCompatActivity() {
@@ -48,6 +49,7 @@ class DashboardActivity : AppCompatActivity() {
 
         // Update username at the Drawer Header
         val navHeader = navView.getHeaderView(0)
+        navHeader.findViewById<TextView>(R.id.txtUsername).text = AppUtils.getUser(this, USER_NAME)
         loginViewModel.user.observe(this, {
             navHeader.findViewById<TextView>(R.id.txtUsername).text = it.username
         })
@@ -63,7 +65,7 @@ class DashboardActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.action_logout -> {
-                AppUtils.updateUserId(this, "")
+                AppUtils.updateUser(this, User("",""))
                 loginViewModel.wipeDb()
 
                 finish()

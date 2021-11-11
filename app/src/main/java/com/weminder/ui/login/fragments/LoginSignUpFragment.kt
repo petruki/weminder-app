@@ -44,7 +44,7 @@ class LoginSignUpFragment : Fragment() {
 
     private fun onSignUp(user: User) {
         activity?.let {
-            AppUtils.updateUserId(it, user.id)
+            AppUtils.updateUser(it, user)
             it.finish()
         }
 

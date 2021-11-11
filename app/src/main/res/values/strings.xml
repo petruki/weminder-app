@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WeMinder</string>
+    <string name="weminder_v1_0">WeMinder v1.0</string>
     <string name="app_preferences_file_key">WEMINDER_PREFS</string>
     <string name="description">TODO</string>
 
@@ -27,20 +28,19 @@
     <string name="edit">Edit</string>
     <string name="leave">Leave</string>
     <string name="add_task">Add Task</string>
-    <string name="weminder_v1_0">WeMinder v1.0</string>
-    <string name="sample_username">username</string>
     <string name="logs">Logs</string>
     <string name="delete">Delete</string>
     <string name="add_log">Add Log</string>
     <string name="logout">Logout</string>
 
-    <string name="sample_group_name">[GROUP NAME]</string>
-    <string name="sample_group_alias">[GROUP ALIAS]</string>
-    <string name="sample_message">[MESSAGE]</string>
-    <string name="sample_date">[10/10/2021]</string>
-    <string name="sample_task_name">[TASK NAME]</string>
-    <string name="sample_task_content">[TASK CONTENT]</string>
-    <string name="sample_task_status">[TASK STATUS]</string>
+    <string name="sample_username" />
+    <string name="sample_group_name" />
+    <string name="sample_group_alias" />
+    <string name="sample_message" />
+    <string name="sample_date" />
+    <string name="sample_task_name" />
+    <string name="sample_task_content" />
+    <string name="sample_task_status" />
 
     <array name="task_status">
         <item>Opened</item>

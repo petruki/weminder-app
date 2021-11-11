@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.weminder.utils.AppUtils
+import com.weminder.utils.USER_ID
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun onEnter() {
-        val userid = AppUtils.getUserId(this)
+        val userid = AppUtils.getUser(this, USER_ID)
 
         finish()
 

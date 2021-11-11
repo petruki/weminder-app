@@ -6,6 +6,7 @@ import com.weminder.BuildConfig
 import com.weminder.data.Group
 import com.weminder.data.Task
 import com.weminder.utils.AppUtils
+import com.weminder.utils.USER_ID
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -21,7 +22,7 @@ object SocketHandler {
     fun initSocket(context: Context) {
         try {
             val opts = IO.Options()
-            opts.query = "auth=${AppUtils.getUserId(context)}"
+            opts.query = "auth=${AppUtils.getUser(context, USER_ID)}"
             socket = IO.socket(BuildConfig.API_URL, opts)
         } catch (e: URISyntaxException) {
             e.printStackTrace()

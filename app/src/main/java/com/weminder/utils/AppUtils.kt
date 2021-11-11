@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.widget.Toast
 import com.weminder.R
+import com.weminder.data.User
 
 class AppUtils {
 
@@ -32,21 +33,22 @@ class AppUtils {
             return false
         }
 
-        fun updateUserId(context: Context, id: String) {
+        fun updateUser(context: Context, user: User) {
             val sharedPref = context.getSharedPreferences(
                 context.getString(R.string.app_preferences_file_key), Context.MODE_PRIVATE)
 
             with(sharedPref.edit()) {
-                putString(USER_ID, id)
+                putString(USER_ID, user.id)
+                putString(USER_NAME, user.username)
                 apply()
             }
         }
 
-        fun getUserId(context: Context): String {
+        fun getUser(context: Context, key: String): String {
             val sharedPref = context.getSharedPreferences(
                 context.getString(R.string.app_preferences_file_key), Context.MODE_PRIVATE)
 
-            return sharedPref.getString(USER_ID, "")!!
+            return sharedPref.getString(key, "")!!
         }
     }
 

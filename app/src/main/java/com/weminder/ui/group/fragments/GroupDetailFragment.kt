@@ -19,6 +19,7 @@ import com.weminder.ui.group.GroupViewModel
 import com.weminder.ui.task.TaskListAdapter
 import com.weminder.ui.task.TaskViewModel
 import com.weminder.utils.AppUtils
+import com.weminder.utils.USER_ID
 import kotlinx.android.synthetic.main.group_detail_content.view.*
 import kotlinx.android.synthetic.main.group_detail_controls.view.*
 import kotlinx.android.synthetic.main.group_detail_header.view.*
@@ -99,7 +100,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private fun onAddGroupTask() {
         if (AppUtils.isInternetAvailable(requireContext())) {
-            val newTask = Task(AppUtils.getUserId(requireContext()), selectedGroup.id)
+            val newTask = Task(AppUtils.getUser(requireContext(), USER_ID), selectedGroup.id)
             val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, selectedGroup.id)
             return findNavController().navigate(action)
         }
