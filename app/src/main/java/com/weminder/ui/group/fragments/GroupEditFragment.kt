@@ -16,6 +16,7 @@ import com.weminder.api.dto.GroupId
 import com.weminder.data.Group
 import com.weminder.databinding.FragmentGroupEditBinding
 import com.weminder.ui.group.GroupViewModel
+import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_group_edit.*
 
 class GroupEditFragment : Fragment() {
@@ -50,17 +51,20 @@ class GroupEditFragment : Fragment() {
     }
 
     private fun onSave() {
-        setupSocket()
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            setupSocket()
 
-        group.name = txtGroupName.text.toString()
-        group.alias = txtGroupAlias.text.toString()
+            group.name = txtGroupName.text.toString()
+            group.alias = txtGroupAlias.text.toString()
 
-        if (group.id.isEmpty()) {
-            SocketHandler.emit(WEvent.CREATE_GROUP, group)
-        } else {
-            SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(group.id))
-            SocketHandler.emit(WEvent.UPDATE_GROUP, group)
-        }
+            if (group.id.isEmpty()) {
+                SocketHandler.emit(WEvent.CREATE_GROUP, group)
+            } else {
+                SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(group.id))
+                SocketHandler.emit(WEvent.UPDATE_GROUP, group)
+            }
+        } else
+            AppUtils.showUnavailable(requireContext())
     }
 
     private fun onCancel() {

@@ -17,6 +17,7 @@ import com.weminder.data.Group
 import com.weminder.databinding.FragmentSearchGroupBinding
 import com.weminder.ui.group.GroupListAdapter
 import com.weminder.ui.group.GroupViewModel
+import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_search_group.*
 
 class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
@@ -56,15 +57,23 @@ class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
         return binding.root
     }
 
-    override fun onGroupClick(group: Group) {
-        setupSocket()
-        groupSelected = group
-        searchViewModel.selectGroupById(group.id)
+    override fun onGroupClick(group: Group): Boolean {
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            setupSocket()
+            groupSelected = group
+            searchViewModel.selectGroupById(group.id)
+            return true
+        }
+        return AppUtils.showUnavailable(requireContext())
     }
 
-    private fun searchGroup() {
-        setupSocket()
-        SocketHandler.emit(WEvent.FIND_GROUP, GroupAlias(txtSearchGroupAlias.text.toString()))
+    private fun searchGroup(): Boolean {
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            setupSocket()
+            SocketHandler.emit(WEvent.FIND_GROUP, GroupAlias(txtSearchGroupAlias.text.toString()))
+            return true
+        }
+        return AppUtils.showUnavailable(requireContext())
     }
 
     private fun setupSocket() {

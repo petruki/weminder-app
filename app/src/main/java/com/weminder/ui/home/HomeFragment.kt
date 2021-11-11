@@ -49,9 +49,10 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
         return binding.root
     }
 
-    override fun onGroupClick(group: Group) {
+    override fun onGroupClick(group: Group): Boolean {
         val action = HomeFragmentDirections.actionNavHomeToGroupDetailFragment(group)
         findNavController().navigate(action)
+        return true
     }
 
     private fun setupSocket() {

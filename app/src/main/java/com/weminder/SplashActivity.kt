@@ -21,6 +21,8 @@ class SplashActivity : AppCompatActivity() {
     private fun initApp() {
         if (AppUtils.isInternetAvailable(this))
             Handler(Looper.getMainLooper()).postDelayed({ onEnter() }, 2000)
+        else
+            onEnter()
     }
 
     private fun onEnter() {

@@ -2,6 +2,7 @@ package com.weminder.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.widget.Toast
 import com.weminder.R
 
 class AppUtils {
@@ -24,6 +25,11 @@ class AppUtils {
                 }
             }
             return result
+        }
+
+        fun showUnavailable(context: Context): Boolean {
+            Toast.makeText(context, "Cannot perform this operation offline", Toast.LENGTH_SHORT).show()
+            return false
         }
 
         fun updateUserId(context: Context, id: String) {

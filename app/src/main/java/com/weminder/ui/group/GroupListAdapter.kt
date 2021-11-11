@@ -35,7 +35,9 @@ class GroupListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onGroupClick(group: Group) { }
+        fun onGroupClick(group: Group): Boolean {
+            return false
+        }
     }
 
 }

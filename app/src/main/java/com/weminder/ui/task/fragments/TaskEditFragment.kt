@@ -16,6 +16,7 @@ import com.weminder.api.dto.GroupId
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskEditBinding
 import com.weminder.ui.task.TaskViewModel
+import com.weminder.utils.AppUtils
 import com.weminder.utils.TASK_STATUS
 import kotlinx.android.synthetic.main.fragment_task_edit.*
 
@@ -53,17 +54,20 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun onSave() {
-        setupSocket()
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            setupSocket()
 
-        task.title = txtTaskTitle.text.toString()
-        task.status = txtTaskStatus.selectedItem.toString()
-        task.content = txtTaskContent.text.toString()
+            task.title = txtTaskTitle.text.toString()
+            task.status = txtTaskStatus.selectedItem.toString()
+            task.content = txtTaskContent.text.toString()
 
-        if (task.id.isEmpty()) {
-            SocketHandler.emit(WEvent.CREATE_TASK, task)
-        } else {
-            SocketHandler.emit(WEvent.UPDATE_TASK, task)
-        }
+            if (task.id.isEmpty()) {
+                SocketHandler.emit(WEvent.CREATE_TASK, task)
+            } else {
+                SocketHandler.emit(WEvent.UPDATE_TASK, task)
+            }
+        } else
+            AppUtils.showUnavailable(requireContext())
     }
 
     private fun setupSocket() {

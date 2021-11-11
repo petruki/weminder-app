@@ -98,24 +98,38 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     private fun onAddGroupTask() {
-        val newTask = Task(AppUtils.getUserId(requireContext()), selectedGroup.id)
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, selectedGroup.id)
-        findNavController().navigate(action)
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            val newTask = Task(AppUtils.getUserId(requireContext()), selectedGroup.id)
+            val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, selectedGroup.id)
+            return findNavController().navigate(action)
+        }
+        AppUtils.showUnavailable(requireContext())
     }
 
     private fun onEditGroup(group: Group) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
-        findNavController().navigate(action)
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
+            return findNavController().navigate(action)
+        }
+        AppUtils.showUnavailable(requireContext())
     }
 
-    private fun onLeaveGroup() {
-        SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.group.id))
-        groupViewModel.delete(selectedGroup)
-        findNavController().navigateUp()
+    private fun onLeaveGroup(): Boolean {
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.group.id))
+            groupViewModel.delete(selectedGroup)
+            findNavController().navigateUp()
+            return true
+        }
+        return AppUtils.showUnavailable(requireContext())
     }
 
     override fun onTaskClick(task: Task) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(selectedGroup.id, task)
+        val action =
+            GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(
+                selectedGroup.id,
+                task
+            )
         findNavController().navigate(action)
     }
 

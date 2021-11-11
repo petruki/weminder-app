@@ -19,6 +19,7 @@ import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskDetailBinding
 import com.weminder.ui.task.LogListAdapter
 import com.weminder.ui.task.TaskViewModel
+import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.task_detail_content.view.*
 import kotlinx.android.synthetic.main.task_detail_controls.view.*
 import kotlinx.android.synthetic.main.task_detail_header.view.*
@@ -46,7 +47,7 @@ class TaskDetailFragment : Fragment() {
                 txtTaskInfoContent.text = task.content
 
                 // Setup Content
-                logListAdapter = LogListAdapter(task.log)
+                logListAdapter = LogListAdapter(task.log.reversed())
                 recyclerTaskLogs.adapter = logListAdapter
                 recyclerTaskLogs.layoutManager = LinearLayoutManager(context)
 
@@ -80,19 +81,35 @@ class TaskDetailFragment : Fragment() {
     }
 
     private fun editTask(task: Task) {
-        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task, task.groupId)
-        findNavController().navigate(action)
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task, task.groupId)
+            return findNavController().navigate(action)
+        }
+
+        AppUtils.showUnavailable(requireContext())
     }
 
     private fun addLogTask(task: Task) {
-        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(task.id, task.groupId)
-        findNavController().navigate(action)
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(
+                task.id,
+                task.groupId
+            )
+            return findNavController().navigate(action)
+        }
+
+        AppUtils.showUnavailable(requireContext())
     }
 
-    private fun deleteTask(task: Task) {
-        SocketHandler.emit(WEvent.DELETE_TASK, task)
-        taskViewModel.delete(task)
-        findNavController().navigateUp()
+    private fun deleteTask(task: Task): Boolean {
+        if (AppUtils.isInternetAvailable(requireContext())) {
+            SocketHandler.emit(WEvent.DELETE_TASK, task)
+            taskViewModel.delete(task)
+            findNavController().navigateUp()
+            return true
+        }
+
+        return AppUtils.showUnavailable(requireContext())
     }
 
     // Socket Events
