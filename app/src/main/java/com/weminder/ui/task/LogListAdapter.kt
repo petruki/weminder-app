@@ -29,6 +29,7 @@ class LogListAdapter(
             with (itemView) {
                 itemLogMessage.text = log.message
                 itemLogCreatedAt.text = log.createdAt
+                itemLogUsername.text = log.username
             }
         }
     }

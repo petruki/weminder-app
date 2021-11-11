@@ -22,6 +22,7 @@ enum class WEvent(val arg: String) {
     ON_DELETE_TASK("on_delete_task"),
     GET_TASK("get_task"),
     ON_GET_TASK("on_get_task"),
+    ADD_LOG("add_log"),
 
     FIND_GROUP("find_group"),
     ON_FIND_GROUP("on_find_group"),

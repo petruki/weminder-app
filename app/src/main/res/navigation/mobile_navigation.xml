@@ -89,10 +89,10 @@
         android:label="Log"
         tools:layout="@layout/fragment_task_log" >
         <argument
-            android:name="taskid"
+            android:name="taskId"
             app:argType="string" />
         <argument
-            android:name="groupid"
+            android:name="groupId"
             app:argType="string" />
     </fragment>
 
