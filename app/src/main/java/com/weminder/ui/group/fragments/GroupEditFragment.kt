@@ -74,6 +74,8 @@ class GroupEditFragment : Fragment() {
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError(it) }
     }
 
+    // Socket Events
+
     private fun onCreateGroup(arg: Array<Any>) {
         requireActivity().runOnUiThread {
             val group = SocketHandler.getDTO(Group::class.java, arg)

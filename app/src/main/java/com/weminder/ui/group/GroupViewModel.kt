@@ -35,6 +35,23 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun delete(group: Group) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.groupDao()?.delete(group)
+                database?.taskDao()?.deleteByGroupId(group.id)
+            }
+        }
+    }
+
+    fun insertTask(task: Task) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.taskDao()?.insert(task)
+            }
+        }
+    }
+
     fun selectGroup(groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

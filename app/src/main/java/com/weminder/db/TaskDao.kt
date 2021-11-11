@@ -15,10 +15,13 @@ interface TaskDao {
     @Delete
     fun delete(task: Task)
 
-    @Query("SELECT * FROM `task` WHERE id = :taskId")
+    @Query("DELETE FROM task WHERE groupId = :groupId")
+    fun deleteByGroupId(groupId: String)
+
+    @Query("SELECT * FROM task WHERE id = :taskId")
     fun getTask(taskId: String): Task
 
-    @Query("SELECT * FROM `task` WHERE groupId = :groupId")
+    @Query("SELECT * FROM task WHERE groupId = :groupId")
     fun getGroupTasks(groupId: String): List<Task>
 
 }
