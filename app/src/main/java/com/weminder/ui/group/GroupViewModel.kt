@@ -27,6 +27,14 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun update(group: Group) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.groupDao()?.update(group)
+            }
+        }
+    }
+
     fun selectGroup(groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
