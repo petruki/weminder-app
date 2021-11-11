@@ -58,6 +58,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) {
                 database?.taskDao()?.deleteAll()
                 database?.groupDao()?.deleteAll()
+                database?.userDao()?.deleteAll()
             }
         }
     }

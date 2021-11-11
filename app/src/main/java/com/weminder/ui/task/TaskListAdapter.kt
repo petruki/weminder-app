@@ -29,7 +29,7 @@ class TaskListAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(task: Task, listener: OnItemClickListener) {
             with (itemView) {
-                itemView.itemTaskTitle.text = task.title
+                itemTaskTitle.text = task.title
 
                 val status = TASK_STATUS.filter { list -> list[0] == task.status }[0]
                 taskIcon.setImageResource(status[1] as Int)

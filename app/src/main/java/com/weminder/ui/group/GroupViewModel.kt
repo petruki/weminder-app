@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.weminder.data.Group
 import com.weminder.data.Task
+import com.weminder.data.User
 import com.weminder.db.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
     var selected: MutableLiveData<Group> = MutableLiveData<Group>()
     var groups: MutableLiveData<List<Group>> = MutableLiveData<List<Group>>()
     var groupTasks: MutableLiveData<List<Task>> = MutableLiveData<List<Task>>()
+    var groupUsers: MutableLiveData<List<User>> = MutableLiveData<List<User>>()
 
     fun getAllGroups() {
         viewModelScope.launch {
@@ -78,6 +80,38 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun syncAllGroupUsers(remoteUsers: List<User>, groupId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                groupUsers.postValue(remoteUsers)
+                val group = database?.groupDao()?.getGroup(groupId)
+
+                // Sync existing users
+                val localGroupUsers = database?.userDao()?.getUsersByIds(group!!.users)
+                remoteUsers.forEach { remote ->
+                    var new = true
+                    localGroupUsers?.forEach { local ->
+                        if (local.id == remote.id) {
+                            new = false
+                            if (local != remote) database?.userDao()?.update(remote)
+                        }
+                    }
+                    if (new) database?.userDao()?.insert(remote)
+                }
+
+                // Sync deleted users
+                localGroupUsers?.forEach { local ->
+                    var deleted = true
+                    remoteUsers.forEach { remote ->
+                        if (local.id == remote.id)
+                            deleted = false
+                    }
+                    if (deleted) database?.userDao()?.delete(local)
+                }
+            }
+        }
+    }
+
     fun insert(group: Group) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -115,8 +149,12 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
     fun selectGroup(groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                selected.postValue(database?.groupDao()?.getGroup(groupId))
-                groupTasks.postValue(database?.taskDao()?.getGroupTasks(groupId))
+                val group = database?.groupDao()?.getGroup(groupId)
+                if (group != null) {
+                    selected.postValue(group)
+                    groupTasks.postValue(database?.taskDao()?.getGroupTasks(groupId))
+                    groupUsers.postValue(database?.userDao()?.getUsersByIds(group.users))
+                }
             }
         }
     }

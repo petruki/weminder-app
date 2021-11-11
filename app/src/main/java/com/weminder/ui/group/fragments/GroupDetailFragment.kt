@@ -14,8 +14,10 @@ import com.weminder.api.WEvent
 import com.weminder.api.dto.GroupId
 import com.weminder.data.Group
 import com.weminder.data.Task
+import com.weminder.data.User
 import com.weminder.databinding.FragmentGroupDetailBinding
 import com.weminder.ui.group.GroupViewModel
+import com.weminder.ui.group.UserListAdapter
 import com.weminder.ui.task.TaskListAdapter
 import com.weminder.ui.task.TaskViewModel
 import com.weminder.utils.AppUtils
@@ -23,6 +25,7 @@ import com.weminder.utils.USER_ID
 import kotlinx.android.synthetic.main.group_detail_content.view.*
 import kotlinx.android.synthetic.main.group_detail_controls.view.*
 import kotlinx.android.synthetic.main.group_detail_header.view.*
+import kotlinx.android.synthetic.main.group_detail_users.view.*
 
 class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
@@ -34,6 +37,9 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     private lateinit var taskListAdapter: TaskListAdapter
     private lateinit var selectedGroup: Group
     private lateinit var tasks: MutableList<Task>
+
+    private lateinit var userListAdapter: UserListAdapter
+    private lateinit var users: MutableList<User>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +63,16 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                     recyclerGroupTasks.layoutManager = LinearLayoutManager(context)
                 })
 
-                // Sync Tasks
+                groupViewModel.groupUsers.observe(viewLifecycleOwner, {
+                    users = it.toMutableList()
+                    userListAdapter = UserListAdapter(users)
+                    recyclerGroupUsers.adapter = userListAdapter
+                    recyclerGroupUsers.layoutManager = LinearLayoutManager(context)
+                })
+
+                // Sync Tasks and Users
                 SocketHandler.emit(WEvent.LIST_TASKS, GroupId(selectedGroup.id))
+                SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
 
                 // Setup Controls
                 btnAddGroupTask.setOnClickListener { onAddGroupTask() }
@@ -86,10 +100,12 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         // Sync Events
         SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onSyncGroup(it) }
         SocketHandler.subscribe(WEvent.ON_LIST_TASKS) { onSyncGroupTasks(it) }
+        SocketHandler.subscribe(WEvent.ON_FIND_GROUP_USERS) { onSyncGroupUsers(it) }
 
         // Listener Events
         SocketHandler.subscribe(WEvent.ON_UPDATE_GROUP) { onUpdateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_LEAVE_GROUP) { onLeaveGroup(it) }
+        SocketHandler.subscribe(WEvent.ON_JOIN_GROUP) { onJoinGroup(it) }
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
@@ -149,6 +165,16 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
             requireActivity().runOnUiThread {
                 val group = SocketHandler.getDTO(Group::class.java, arg)
                 groupViewModel.update(group)
+                SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
+            }
+    }
+
+    private fun onJoinGroup(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.update(group)
+                SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
             }
     }
 
@@ -200,6 +226,14 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
             requireActivity().runOnUiThread {
                 val tasks = SocketHandler.getDTOTaskList(arg)
                 groupViewModel.syncAllGroupTasks(tasks, selectedGroup.id)
+            }
+    }
+
+    private fun onSyncGroupUsers(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val users = SocketHandler.getDTOUserList(arg)
+                groupViewModel.syncAllGroupUsers(users, selectedGroup.id)
             }
     }
 

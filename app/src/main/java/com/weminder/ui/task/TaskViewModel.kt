@@ -15,7 +15,6 @@ class TaskViewModel(app: Application) : AndroidViewModel(app) {
 
     private val database = AppDatabase.getInstance(app)
     var selected : MutableLiveData<Task> = MutableLiveData<Task>()
-    var taskLogs : MutableLiveData<List<Log>> = MutableLiveData<List<Log>>()
 
     fun insert(task: Task) {
         viewModelScope.launch {

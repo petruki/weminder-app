@@ -66,6 +66,7 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
             requireActivity().runOnUiThread {
                 val groups = SocketHandler.getDTOGroupList(arg)
                 groupViewModel.syncAllGroups(groups)
+                SocketHandler.disconnect()
             }
     }
 

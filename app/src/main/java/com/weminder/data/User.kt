@@ -18,7 +18,4 @@ data class User(
 ) : Parcelable {
     constructor(username: String, password: String):
         this(id="",username = username, password = password, email="")
-
-    constructor(id: String):
-        this(id=id, email = "")
 }

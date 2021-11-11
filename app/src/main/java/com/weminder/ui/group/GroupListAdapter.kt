@@ -28,7 +28,7 @@ class GroupListAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(group: Group, listener: OnItemClickListener) {
             with (itemView) {
-                itemView.itemGroupName.text = group.name
+                itemGroupName.text = group.name
                 setOnClickListener { listener.onGroupClick(group) }
             }
         }

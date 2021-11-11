@@ -39,11 +39,17 @@
                 android:id="@+id/includeGroupDetailContent"
                 layout="@layout/group_detail_content"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="300dp"
                 android:layout_margin="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp" />
+
+            <include
+                android:id="@+id/includeGroupDetailUsers"
+                layout="@layout/group_detail_users"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

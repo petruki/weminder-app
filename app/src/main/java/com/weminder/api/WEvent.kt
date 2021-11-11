@@ -24,6 +24,9 @@ enum class WEvent(val arg: String) {
     ON_GET_TASK("on_get_task"),
     ADD_LOG("add_log"),
 
+    FIND_GROUP_USERS("find_group_users"),
+    ON_FIND_GROUP_USERS("on_find_group_users"),
+
     FIND_GROUP("find_group"),
     ON_FIND_GROUP("on_find_group"),
     JOIN_GROUP("join_group"),
