@@ -17,6 +17,7 @@ import com.weminder.data.Task
 import com.weminder.databinding.FragmentGroupDetailBinding
 import com.weminder.ui.group.GroupViewModel
 import com.weminder.ui.task.TaskListAdapter
+import com.weminder.ui.task.TaskViewModel
 import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.group_detail_content.view.*
 import kotlinx.android.synthetic.main.group_detail_controls.view.*
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.group_detail_header.view.*
 class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private val groupViewModel: GroupViewModel by viewModels()
+    private val taskViewModel: TaskViewModel by viewModels()
     private val args: GroupDetailFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentGroupDetailBinding
@@ -79,6 +81,8 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         SocketHandler.subscribe(WEvent.ON_UPDATE_GROUP) { onUpdateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_LEAVE_GROUP) { onLeaveGroup(it) }
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
+        SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
+        SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
     }
 
     private fun onAddGroupTask() {
@@ -126,6 +130,28 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
             tasks.add(task)
             taskListAdapter.notifyItemInserted(tasks.size)
+        }
+    }
+
+    private fun onUpdateTask(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val task = SocketHandler.getDTO(Task::class.java, arg)
+            taskViewModel.update(task)
+
+            val index = tasks.indexOf(task)
+            tasks[index] = task
+            taskListAdapter.notifyItemChanged(index)
+        }
+    }
+
+    private fun onDeleteTask(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val task = SocketHandler.getDTO(Task::class.java, arg)
+            taskViewModel.delete(task)
+
+            val index = tasks.indexOf(task)
+            tasks.removeAt(index)
+            taskListAdapter.notifyItemRemoved(index)
         }
     }
 

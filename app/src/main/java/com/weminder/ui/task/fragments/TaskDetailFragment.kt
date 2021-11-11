@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -97,6 +98,9 @@ class TaskDetailFragment : Fragment() {
         requireActivity().runOnUiThread {
             val task = SocketHandler.getDTO(Task::class.java, arg)
             taskViewModel.delete(task)
+
+            Toast.makeText(context, "Task ${task.title} has been deleted", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
         }
     }
 }
