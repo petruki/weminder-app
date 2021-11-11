@@ -1,17 +1,25 @@
 package com.weminder.ui.login
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.weminder.api.APIResources
 import com.weminder.api.WeminderAPI
 import com.weminder.data.User
+import com.weminder.db.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(app: Application) : AndroidViewModel(app) {
 
+    private val database = AppDatabase.getInstance(app)
     private val api: APIResources = WeminderAPI.api()
     val user: MutableLiveData<User> = MutableLiveData<User>()
 
@@ -44,5 +52,14 @@ class LoginViewModel : ViewModel() {
             }
 
         })
+    }
+
+    fun wipeDb() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.taskDao()?.deleteAll()
+                database?.groupDao()?.deleteAll()
+            }
+        }
     }
 }

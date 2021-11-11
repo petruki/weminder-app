@@ -14,10 +14,37 @@ import kotlinx.coroutines.withContext
 class GroupViewModel(app: Application) : AndroidViewModel(app) {
 
     private val database = AppDatabase.getInstance(app)
-    var selected : MutableLiveData<Group> = MutableLiveData<Group>()
-    var groupTasks : MutableLiveData<List<Task>> = MutableLiveData<List<Task>>()
+    var selected: MutableLiveData<Group> = MutableLiveData<Group>()
+    var groups: MutableLiveData<List<Group>> = MutableLiveData<List<Group>>()
+    var groupTasks: MutableLiveData<List<Task>> = MutableLiveData<List<Task>>()
 
-    fun getAllGroups() = database?.groupDao()?.getAllGroups()
+    fun getAllGroups() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                groups.postValue(database?.groupDao()?.getAllGroups())
+            }
+        }
+    }
+
+    fun syncAllGroups(sync: List<Group>) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                groups.postValue(sync)
+
+                val allGroups = database?.groupDao()?.getAllGroups()
+                sync.forEach {
+                    var new = true
+                    allGroups?.forEach { g ->
+                        if (g.id == it.id) {
+                            new = false
+                            if (g != it) database?.groupDao()?.update(it)
+                        }
+                    }
+                    if (new) database?.groupDao()?.insert(it)
+                }
+            }
+        }
+    }
 
     fun insert(group: Group) {
         viewModelScope.launch {
@@ -31,6 +58,7 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 database?.groupDao()?.update(group)
+                selected.postValue(group)
             }
         }
     }

@@ -88,19 +88,21 @@ class TaskDetailFragment : Fragment() {
     // Socket Events
 
     private fun onUpdateTask(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val task = SocketHandler.getDTO(Task::class.java, arg)
-            taskViewModel.update(task)
-        }
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                taskViewModel.update(task)
+            }
     }
 
     private fun onDeleteTask(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val task = SocketHandler.getDTO(Task::class.java, arg)
-            taskViewModel.delete(task)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                taskViewModel.delete(task)
 
-            Toast.makeText(context, "Task ${task.title} has been deleted", Toast.LENGTH_SHORT).show()
-            findNavController().navigateUp()
-        }
+                Toast.makeText(context, "Task ${task.title} has been deleted", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            }
     }
 }

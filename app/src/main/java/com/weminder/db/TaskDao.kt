@@ -15,6 +15,9 @@ interface TaskDao {
     @Delete
     fun delete(task: Task)
 
+    @Query("DELETE FROM task")
+    fun deleteAll(): Int
+
     @Query("DELETE FROM task WHERE groupId = :groupId")
     fun deleteByGroupId(groupId: String)
 

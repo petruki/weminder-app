@@ -73,24 +73,28 @@ class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
         SocketHandler.subscribe(WEvent.ON_JOIN_GROUP) { onJoinGroup(it) }
     }
 
+    // Socket Events
+
     private fun onFindGroup(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            searchViewModel.groups.postValue(listOf(group))
-            SocketHandler.disconnect()
-        }
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                searchViewModel.groups.postValue(listOf(group))
+                SocketHandler.disconnect()
+            }
     }
 
     private fun onJoinGroup(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            groupViewModel.insert(group)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.insert(group)
 
-            Toast.makeText(requireActivity(), "Joined ${group.name}", Toast.LENGTH_SHORT).show()
-            SocketHandler.disconnect()
+                Toast.makeText(requireActivity(), "Joined ${group.name}", Toast.LENGTH_SHORT).show()
+                SocketHandler.disconnect()
 
-            findNavController().navigateUp()
-        }
+                findNavController().navigateUp()
+            }
     }
 
 }

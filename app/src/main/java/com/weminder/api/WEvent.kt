@@ -25,6 +25,8 @@ enum class WEvent(val arg: String) {
     ON_FIND_GROUP("on_find_group"),
     JOIN_GROUP("join_group"),
     ON_JOIN_GROUP("on_join_group"),
+    FIND_USER_GROUPS("find_user_groups"),
+    ON_FIND_USER_GROUPS("on_find_user_groups"),
 
     ON_ERROR("on_error")
 }

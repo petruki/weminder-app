@@ -31,9 +31,6 @@
         android:name="com.weminder.ui.group.fragments.GroupDetailFragment"
         android:label="Group Detail"
         tools:layout="@layout/fragment_group_detail">
-        <argument
-            android:name="groupid"
-            app:argType="string" />
         <action
             android:id="@+id/action_groupDetailFragment_to_taskDetailFragment"
             app:destination="@id/taskDetailFragment" />
@@ -43,6 +40,9 @@
         <action
             android:id="@+id/action_groupDetailFragment_to_groupEditFragment"
             app:destination="@id/groupEditFragment" />
+        <argument
+            android:name="group"
+            app:argType="com.weminder.data.Group" />
     </fragment>
     <fragment
         android:id="@+id/taskDetailFragment"

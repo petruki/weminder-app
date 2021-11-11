@@ -40,6 +40,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     ): View {
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false)
 
+        selectedGroup = args.group
         groupViewModel.selected.observe(viewLifecycleOwner, { group ->
             selectedGroup = group
             with( binding.root) {
@@ -62,7 +63,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
             }
         })
 
-        groupViewModel.selectGroup(args.groupid)
+        groupViewModel.selectGroup(selectedGroup.id)
         setupSocket()
 
         return binding.root
@@ -70,24 +71,28 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupid))
+        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(selectedGroup.id))
         SocketHandler.disconnect()
     }
 
     private fun setupSocket() {
         SocketHandler.initSocket(requireContext())
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupid))
+        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(selectedGroup.id))
 
+        SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onSyncGroup(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_GROUP) { onUpdateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_LEAVE_GROUP) { onLeaveGroup(it) }
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
+
+        // sync group
+        SocketHandler.emit(WEvent.FIND_GROUP, GroupId(selectedGroup.id))
     }
 
     private fun onAddGroupTask() {
-        val newTask = Task(AppUtils.getUserId(requireContext()), args.groupid)
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, args.groupid)
+        val newTask = Task(AppUtils.getUserId(requireContext()), selectedGroup.id)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, selectedGroup.id)
         findNavController().navigate(action)
     }
 
@@ -97,7 +102,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     private fun onLeaveGroup() {
-        SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.groupid))
+        SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.group.id))
         groupViewModel.delete(selectedGroup)
         findNavController().navigateUp()
     }
@@ -110,49 +115,62 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     // Socket Events
 
     private fun onUpdateGroup(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            groupViewModel.update(group)
-        }
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.update(group)
+            }
     }
 
     private fun onLeaveGroup(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            groupViewModel.update(group)
-        }
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.update(group)
+            }
     }
 
     private fun onCreateTask(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val task = SocketHandler.getDTO(Task::class.java, arg)
-            groupViewModel.insertTask(task)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                groupViewModel.insertTask(task)
 
-            tasks.add(task)
-            taskListAdapter.notifyItemInserted(tasks.size)
-        }
+                tasks.add(task)
+                taskListAdapter.notifyItemInserted(tasks.size)
+            }
     }
 
     private fun onUpdateTask(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val task = SocketHandler.getDTO(Task::class.java, arg)
-            taskViewModel.update(task)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                taskViewModel.update(task)
 
-            val index = tasks.indexOf(task)
-            tasks[index] = task
-            taskListAdapter.notifyItemChanged(index)
-        }
+                val index = tasks.indexOf(task)
+                tasks[index] = task
+                taskListAdapter.notifyItemChanged(index)
+            }
     }
 
     private fun onDeleteTask(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val task = SocketHandler.getDTO(Task::class.java, arg)
-            taskViewModel.delete(task)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val task = SocketHandler.getDTO(Task::class.java, arg)
+                taskViewModel.delete(task)
 
-            val index = tasks.indexOf(task)
-            tasks.removeAt(index)
-            taskListAdapter.notifyItemRemoved(index)
-        }
+                val index = tasks.indexOf(task)
+                tasks.removeAt(index)
+                taskListAdapter.notifyItemRemoved(index)
+            }
+    }
+
+    private fun onSyncGroup(arg: Array<Any>) {
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.update(group)
+            }
     }
 
 }

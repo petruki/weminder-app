@@ -16,10 +16,13 @@ interface GroupDao {
     @Delete
     fun delete(group: Group)
 
+    @Query("DELETE FROM `group`")
+    fun deleteAll(): Int
+
     @Query("SELECT * FROM `group` WHERE id = :groupId")
     fun getGroup(groupId: String): Group
 
     @Query("SELECT * FROM `group`")
-    fun getAllGroups(): LiveData<List<Group>>
+    fun getAllGroups(): List<Group>
 
 }

@@ -77,33 +77,36 @@ class GroupEditFragment : Fragment() {
     // Socket Events
 
     private fun onCreateGroup(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            groupViewModel.insert(group)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.insert(group)
 
-            Toast.makeText(context, "Group ${group.name} Created", Toast.LENGTH_SHORT).show()
-            SocketHandler.getClient().disconnect()
-            findNavController().navigateUp()
-        }
+                Toast.makeText(context, "Group ${group.name} Created", Toast.LENGTH_SHORT).show()
+                SocketHandler.getClient().disconnect()
+                findNavController().navigateUp()
+            }
     }
 
     private fun onUpdateGroup(arg: Array<Any>) {
         SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(group.id))
-        requireActivity().runOnUiThread {
-            val group = SocketHandler.getDTO(Group::class.java, arg)
-            groupViewModel.update(group)
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val group = SocketHandler.getDTO(Group::class.java, arg)
+                groupViewModel.update(group)
 
-            Toast.makeText(context, "Group ${group.name} Edited", Toast.LENGTH_SHORT).show()
-            SocketHandler.getClient().disconnect()
-            findNavController().navigateUp()
-        }
+                Toast.makeText(context, "Group ${group.name} Edited", Toast.LENGTH_SHORT).show()
+                SocketHandler.getClient().disconnect()
+                findNavController().navigateUp()
+            }
     }
 
     private fun onError(arg: Array<Any>) {
-        requireActivity().runOnUiThread {
-            val error = SocketHandler.getDTO(Error::class.java, arg)
-            Toast.makeText(context, error.error, Toast.LENGTH_SHORT).show()
-            SocketHandler.getClient().disconnect()
-        }
+        if (isAdded)
+            requireActivity().runOnUiThread {
+                val error = SocketHandler.getDTO(Error::class.java, arg)
+                Toast.makeText(context, error.error, Toast.LENGTH_SHORT).show()
+                SocketHandler.getClient().disconnect()
+            }
     }
 }

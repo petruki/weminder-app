@@ -3,6 +3,7 @@ package com.weminder.api
 import android.content.Context
 import com.google.gson.Gson
 import com.weminder.BuildConfig
+import com.weminder.data.Group
 import com.weminder.utils.AppUtils
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -60,5 +61,9 @@ object SocketHandler {
 
     fun <T> getDTO(dtoType: Class<T>, vararg args: Any): T {
         return gson.fromJson((args[0] as Array<*>)[0].toString(), dtoType)
+    }
+
+    fun getDTOGroupList(vararg args: Any): List<Group> {
+        return gson.fromJson((args[0] as Array<*>)[0].toString(), Array<Group>::class.java).toList()
     }
 }

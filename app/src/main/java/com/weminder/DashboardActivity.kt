@@ -64,6 +64,7 @@ class DashboardActivity : AppCompatActivity() {
         when (menuItem.itemId) {
             R.id.action_logout -> {
                 AppUtils.updateUserId(this, "")
+                loginViewModel.wipeDb()
 
                 finish()
                 startActivity(Intent(this, LoginActivity::class.java))
