@@ -28,7 +28,6 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         with(binding) {
-
             groupViewModel.getAllGroups()?.observe(viewLifecycleOwner, {
                 groupListAdapter = GroupListAdapter(it, this@HomeFragment)
                 recyclerGroup.adapter = groupListAdapter

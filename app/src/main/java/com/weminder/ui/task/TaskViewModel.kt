@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.weminder.data.Group
 import com.weminder.data.Log
 import com.weminder.data.Task
 import com.weminder.db.AppDatabase
@@ -18,13 +19,7 @@ class TaskViewModel(app: Application) : AndroidViewModel(app) {
     var selected : MutableLiveData<Task> = MutableLiveData<Task>()
     var taskLogs : MutableLiveData<List<Log>> = MutableLiveData<List<Log>>()
 
-    val mockTasks: List<Task> = MOCK_TASKS
-
     fun getAllTaskByGroupId(groupId: String) = database?.taskDao()?.getGroupTasks(groupId)
-
-    fun selectTask(task: Task) {
-        selected?.postValue(task)
-    }
 
     fun insert(task: Task) {
         viewModelScope.launch {
@@ -38,6 +33,14 @@ class TaskViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 database?.taskDao()?.update(task)
+            }
+        }
+    }
+
+    fun delete(task: Task) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.taskDao()?.delete(task)
             }
         }
     }

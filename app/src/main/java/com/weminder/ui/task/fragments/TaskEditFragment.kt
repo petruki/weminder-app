@@ -64,12 +64,12 @@ class TaskEditFragment : Fragment() {
         } else {
             SocketHandler.emit(WEvent.UPDATE_TASK, task)
         }
-
-        findNavController().navigateUp()
     }
 
     private fun setupSocket() {
         SocketHandler.initSocket(requireContext())
+        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
+
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError(it) }

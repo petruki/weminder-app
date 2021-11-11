@@ -9,6 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weminder.api.SocketHandler
+import com.weminder.api.WEvent
+import com.weminder.api.dto.GroupId
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskDetailBinding
 import com.weminder.ui.task.LogListAdapter
@@ -30,7 +33,7 @@ class TaskDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
-        loadTask()
+
 
         taskViewModel.selected.observe(viewLifecycleOwner, { task ->
             with( binding.root) {
@@ -45,31 +48,55 @@ class TaskDetailFragment : Fragment() {
                 recyclerTaskLogs.layoutManager = LinearLayoutManager(context)
 
                 // Setup Controls
-                btnEditTask.setOnClickListener { onEditTask(task) }
-                btnAddLogTask.setOnClickListener { onAddLogTask(task) }
-                btnDeleteTask.setOnClickListener { onDeleteTask(task) }
+                btnEditTask.setOnClickListener { editTask(task) }
+                btnAddLogTask.setOnClickListener { addLogTask(task) }
+                btnDeleteTask.setOnClickListener { deleteTask(task) }
             }
         })
+
+        taskViewModel.selectTask(args.taskid)
+        setupSocket()
 
         return binding.root
     }
 
-    private fun loadTask() {
-        val task = taskViewModel.mockTasks.filter { it.id == args.taskid }
-        taskViewModel.selectTask(task[0])
+    private fun setupSocket() {
+        SocketHandler.initSocket(requireContext())
+        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
+
+        SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
+        SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
     }
 
-    private fun onEditTask(task: Task) {
-        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task)
+    private fun editTask(task: Task) {
+        val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskEditFragment(task, task.groupId)
         findNavController().navigate(action)
     }
 
-    private fun onAddLogTask(task: Task) {
+    private fun addLogTask(task: Task) {
         val action = TaskDetailFragmentDirections.actionTaskDetailFragmentToTaskLogFragment(task.id, task.groupId)
         findNavController().navigate(action)
     }
 
-    private fun onDeleteTask(task: Task) {
+    private fun deleteTask(task: Task) {
+        SocketHandler.emit(WEvent.DELETE_TASK, task)
+        taskViewModel.delete(task)
         findNavController().navigateUp()
+    }
+
+    // Socket Events
+
+    private fun onUpdateTask(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val task = SocketHandler.getDTO(Task::class.java, arg)
+            taskViewModel.update(task)
+        }
+    }
+
+    private fun onDeleteTask(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val task = SocketHandler.getDTO(Task::class.java, arg)
+            taskViewModel.delete(task)
+        }
     }
 }

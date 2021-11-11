@@ -68,7 +68,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        SocketHandler.emit(WEvent.LEAVE_ROOM, args.groupid)
+        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupid))
         SocketHandler.disconnect()
     }
 
@@ -99,7 +99,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     override fun onTaskClick(task: Task) {
-        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id)
+        val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskDetailFragment(task.id, selectedGroup.id)
         findNavController().navigate(action)
     }
 
