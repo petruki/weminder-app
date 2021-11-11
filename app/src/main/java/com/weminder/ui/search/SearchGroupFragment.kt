@@ -4,21 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weminder.api.SocketHandler
+import com.weminder.api.WEvent
+import com.weminder.api.dto.GroupAlias
+import com.weminder.api.dto.GroupId
 import com.weminder.data.Group
 import com.weminder.databinding.FragmentSearchGroupBinding
 import com.weminder.ui.group.GroupListAdapter
+import com.weminder.ui.group.GroupViewModel
 import kotlinx.android.synthetic.main.fragment_search_group.*
 
 class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
     private val searchViewModel: SearchGroupViewModel by viewModels()
+    private val groupViewModel: GroupViewModel by viewModels()
 
     private lateinit var binding: FragmentSearchGroupBinding
     private lateinit var groupListAdapter: GroupListAdapter
+    private lateinit var groupSelected: Group
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,20 +41,56 @@ class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
                 recyclerSearchGroup.layoutManager = LinearLayoutManager(context)
             }
 
-            btnSearchGroup.setOnClickListener { onSearchGroup() }
+            searchViewModel.selected.observe(viewLifecycleOwner, { group ->
+                if (group != null) {
+                    Toast.makeText(requireActivity(), "You already joined this group", Toast.LENGTH_SHORT).show()
+                } else {
+                    SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(groupSelected.id))
+                    SocketHandler.emit(WEvent.JOIN_GROUP, GroupId(groupSelected.id))
+                }
+            })
+
+            btnSearchGroup.setOnClickListener { searchGroup() }
         }
 
         return binding.root
     }
 
     override fun onGroupClick(group: Group) {
-        val action = SearchGroupFragmentDirections.actionNavSearchToGroupDetailFragment(group.id)
-        findNavController().navigate(action)
+        setupSocket()
+        groupSelected = group
+        searchViewModel.selectGroupById(group.id)
     }
 
-    private fun onSearchGroup() {
-        val groupAlias = txtSearchGroupAlias.text.toString()
-        searchViewModel.findGroupsByAlias(groupAlias)
+    private fun searchGroup() {
+        setupSocket()
+        SocketHandler.emit(WEvent.FIND_GROUP, GroupAlias(txtSearchGroupAlias.text.toString()))
+    }
+
+    private fun setupSocket() {
+        SocketHandler.initSocket(requireContext())
+        SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onFindGroup(it) }
+        SocketHandler.subscribe(WEvent.ON_JOIN_GROUP) { onJoinGroup(it) }
+    }
+
+    private fun onFindGroup(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val group = SocketHandler.getDTO(Group::class.java, arg)
+            searchViewModel.groups.postValue(listOf(group))
+            SocketHandler.disconnect()
+        }
+    }
+
+    private fun onJoinGroup(arg: Array<Any>) {
+        requireActivity().runOnUiThread {
+            val group = SocketHandler.getDTO(Group::class.java, arg)
+            groupViewModel.insert(group)
+
+            Toast.makeText(requireActivity(), "Joined ${group.name}", Toast.LENGTH_SHORT).show()
+            SocketHandler.disconnect()
+
+            findNavController().navigateUp()
+        }
     }
 
 }
