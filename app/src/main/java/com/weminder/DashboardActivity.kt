@@ -75,11 +75,6 @@ class DashboardActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(menuItem)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        SocketHandler.disconnect()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_dashboard)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

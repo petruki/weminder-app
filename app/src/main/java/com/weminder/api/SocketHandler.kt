@@ -3,9 +3,6 @@ package com.weminder.api
 import android.content.Context
 import com.google.gson.Gson
 import com.weminder.BuildConfig
-import com.weminder.data.Group
-import com.weminder.data.Task
-import com.weminder.data.User
 import com.weminder.utils.AppUtils
 import com.weminder.utils.USER_ID
 import io.socket.client.IO
@@ -33,14 +30,9 @@ object SocketHandler {
     @Synchronized
     fun getClient(): Socket {
         if (!socket.connected())
-            connect()
+            socket.connect()
 
         return socket
-    }
-
-    @Synchronized
-    fun connect() {
-        socket.connect()
     }
 
     fun disconnect() {
@@ -63,15 +55,8 @@ object SocketHandler {
         return gson.fromJson((args[0] as Array<*>)[0].toString(), dtoType)
     }
 
-    fun getDTOGroupList(vararg args: Any): List<Group> {
-        return gson.fromJson((args[0] as Array<*>)[0].toString(), Array<Group>::class.java).toList()
+    fun <T> getDTOList(dtoType: Class<Array<T>>, vararg args: Any): List<T> {
+        return gson.fromJson((args[0] as Array<*>)[0].toString(), dtoType).toList()
     }
 
-    fun getDTOTaskList(vararg args: Any): List<Task> {
-        return gson.fromJson((args[0] as Array<*>)[0].toString(), Array<Task>::class.java).toList()
-    }
-
-    fun getDTOUserList(vararg args: Any): List<User> {
-        return gson.fromJson((args[0] as Array<*>)[0].toString(), Array<User>::class.java).toList()
-    }
 }

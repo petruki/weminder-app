@@ -90,12 +90,6 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(selectedGroup.id))
-        SocketHandler.disconnect()
-    }
-
     private fun setupSocket() {
         SocketHandler.initSocket(requireContext())
 
@@ -168,6 +162,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         if (isAdded)
             requireActivity().runOnUiThread {
                 if (isUserLeaving) {
+                    SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(selectedGroup.id))
                     SocketHandler.disconnect()
                     groupViewModel.delete(selectedGroup)
                     findNavController().navigateUp()
@@ -238,7 +233,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     private fun onSyncGroupTasks(arg: Array<Any>) {
         if (isAdded)
             requireActivity().runOnUiThread {
-                val tasks = SocketHandler.getDTOTaskList(arg)
+                val tasks = SocketHandler.getDTOList(Array<Task>::class.java, arg)
                 groupViewModel.syncAllGroupTasks(tasks, selectedGroup.id)
             }
     }
@@ -246,7 +241,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     private fun onSyncGroupUsers(arg: Array<Any>) {
         if (isAdded)
             requireActivity().runOnUiThread {
-                val users = SocketHandler.getDTOUserList(arg)
+                val users = SocketHandler.getDTOList(Array<User>::class.java, arg)
                 groupViewModel.syncAllGroupUsers(users, selectedGroup.id)
             }
     }

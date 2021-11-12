@@ -24,6 +24,11 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
     private lateinit var groupListAdapter: GroupListAdapter
     private lateinit var userGroups: List<Group>
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SocketHandler.initSocket(requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +61,6 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
         SocketHandler.subscribe(WEvent.ON_FIND_USER_GROUPS) { onSyncGroups(it) }
         SocketHandler.emit(WEvent.FIND_USER_GROUPS, GroupId(""))
     }
@@ -64,7 +68,7 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
     private fun onSyncGroups(arg: Array<Any>) {
         if (isAdded)
             requireActivity().runOnUiThread {
-                val groups = SocketHandler.getDTOGroupList(arg)
+                val groups = SocketHandler.getDTOList(Array<Group>::class.java, arg)
                 groupViewModel.syncAllGroups(groups)
                 SocketHandler.disconnect()
             }

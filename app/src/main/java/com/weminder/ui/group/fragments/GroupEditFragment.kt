@@ -45,11 +45,6 @@ class GroupEditFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        SocketHandler.disconnect()
-    }
-
     private fun onSave() {
         if (AppUtils.isInternetAvailable(requireContext())) {
             setupSocket()
