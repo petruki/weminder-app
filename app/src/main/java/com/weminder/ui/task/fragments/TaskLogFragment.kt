@@ -35,7 +35,6 @@ class TaskLogFragment : Fragment() {
             btnCancelLog.setOnClickListener { cancel() }
         }
 
-        setupSocket()
         return binding.root
     }
 
@@ -44,28 +43,28 @@ class TaskLogFragment : Fragment() {
     }
 
     private fun addLog() {
+        setupSocket()
         SocketHandler.emit(WEvent.ADD_LOG,
             LogMessage(args.groupId, args.taskId, txtTaskLogMessage.text.toString()))
     }
 
     private fun setupSocket() {
         SocketHandler.initSocket(requireContext())
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
-
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError() }
+        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
     }
 
     // Socket Events
 
     private fun onUpdateTask(arg: Array<Any>) {
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupId))
         if (isAdded)
             requireActivity().runOnUiThread {
                 val task = SocketHandler.getDTO(Task::class.java, arg)
                 taskViewModel.update(task)
-
                 Toast.makeText(context, "Log added", Toast.LENGTH_SHORT).show()
+
+                SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupId))
                 SocketHandler.getClient().disconnect()
                 findNavController().navigateUp()
             }
