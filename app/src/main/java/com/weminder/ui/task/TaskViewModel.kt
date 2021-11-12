@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.weminder.data.Log
 import com.weminder.data.Task
 import com.weminder.db.AppDatabase
 import kotlinx.coroutines.Dispatchers

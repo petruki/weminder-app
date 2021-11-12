@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.group_detail_content.view.*
 import kotlinx.android.synthetic.main.group_detail_controls.view.*
 import kotlinx.android.synthetic.main.group_detail_header.view.*
 import kotlinx.android.synthetic.main.group_detail_users.view.*
+import kotlin.properties.Delegates
 
 class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
@@ -40,6 +41,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private lateinit var userListAdapter: UserListAdapter
     private lateinit var users: MutableList<User>
+    private var isUserLeaving by Delegates.notNull<Boolean>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +49,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     ): View {
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false)
 
+        isUserLeaving = false
         selectedGroup = args.group
         groupViewModel.selected.observe(viewLifecycleOwner, { group ->
             selectedGroup = group
@@ -75,9 +78,9 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
 
                 // Setup Controls
-                btnAddGroupTask.setOnClickListener { onAddGroupTask() }
-                btnEditGroup.setOnClickListener { onEditGroup(group) }
-                btnLeaveGroup.setOnClickListener { onLeaveGroup() }
+                btnAddGroupTask.setOnClickListener { addGroupTask() }
+                btnEditGroup.setOnClickListener { editGroup(group) }
+                btnLeaveGroup.setOnClickListener { leaveGroup() }
             }
         })
 
@@ -95,7 +98,6 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private fun setupSocket() {
         SocketHandler.initSocket(requireContext())
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(selectedGroup.id))
 
         // Sync Events
         SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onSyncGroup(it) }
@@ -111,10 +113,11 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
 
         // Trigger sync group
+        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(selectedGroup.id))
         SocketHandler.emit(WEvent.FIND_GROUP, GroupId(selectedGroup.id))
     }
 
-    private fun onAddGroupTask() {
+    private fun addGroupTask() {
         if (AppUtils.isInternetAvailable(requireContext())) {
             val newTask = Task(AppUtils.getUser(requireContext(), USER_ID), selectedGroup.id)
             val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToTaskEditFragment(newTask, selectedGroup.id)
@@ -123,7 +126,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         AppUtils.showUnavailable(requireContext())
     }
 
-    private fun onEditGroup(group: Group) {
+    private fun editGroup(group: Group) {
         if (AppUtils.isInternetAvailable(requireContext())) {
             val action = GroupDetailFragmentDirections.actionGroupDetailFragmentToGroupEditFragment(group)
             return findNavController().navigate(action)
@@ -131,12 +134,13 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         AppUtils.showUnavailable(requireContext())
     }
 
-    private fun onLeaveGroup(): Boolean {
+    private fun leaveGroup(): Boolean {
         if (AppUtils.isInternetAvailable(requireContext())) {
-            SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.group.id))
-            groupViewModel.delete(selectedGroup)
-            findNavController().navigateUp()
-            return true
+            if (SocketHandler.getClient().connected()) {
+                isUserLeaving = true
+                SocketHandler.emit(WEvent.LEAVE_GROUP, GroupId(args.group.id))
+                return true
+            }
         }
         return AppUtils.showUnavailable(requireContext())
     }
@@ -163,9 +167,15 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     private fun onLeaveGroup(arg: Array<Any>) {
         if (isAdded)
             requireActivity().runOnUiThread {
-                val group = SocketHandler.getDTO(Group::class.java, arg)
-                groupViewModel.update(group)
-                SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
+                if (isUserLeaving) {
+                    SocketHandler.disconnect()
+                    groupViewModel.delete(selectedGroup)
+                    findNavController().navigateUp()
+                } else {
+                    val group = SocketHandler.getDTO(Group::class.java, arg)
+                    groupViewModel.update(group)
+                    SocketHandler.emit(WEvent.FIND_GROUP_USERS, GroupId(selectedGroup.id))
+                }
             }
     }
 
@@ -195,9 +205,13 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                 val task = SocketHandler.getDTO(Task::class.java, arg)
                 taskViewModel.update(task)
 
-                val index = tasks.indexOf(task)
-                tasks[index] = task
-                taskListAdapter.notifyItemChanged(index)
+                for (index in tasks.indices) {
+                    if (tasks[index].id == task.id) {
+                        tasks[index] = task
+                        taskListAdapter.notifyItemChanged(index)
+                        break
+                    }
+                }
             }
     }
 

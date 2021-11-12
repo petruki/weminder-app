@@ -45,6 +45,16 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     if (new) database?.groupDao()?.insert(remote)
                 }
+
+                // Sync deleted groups
+                localGroups?.forEach { local ->
+                    var deleted = true
+                    remoteGroups.forEach { remote ->
+                        if (local.id == remote.id)
+                            deleted = false
+                    }
+                    if (deleted) database?.groupDao()?.delete(local)
+                }
             }
         }
     }

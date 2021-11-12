@@ -43,13 +43,11 @@ object SocketHandler {
         socket.connect()
     }
 
-    @Synchronized
     fun disconnect() {
         socket.emit("logout")
         socket.disconnect()
     }
 
-    @Synchronized
     fun emit(event: WEvent, args: Any?) {
         if (args != null)
             getClient().emit(event.arg, gson.toJson(args))
@@ -57,7 +55,6 @@ object SocketHandler {
             getClient().emit(event.arg)
     }
 
-    @Synchronized
     fun subscribe(event: WEvent, listener: Emitter.Listener) {
         getClient().on(event.arg, listener)
     }
