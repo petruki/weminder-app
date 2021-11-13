@@ -91,7 +91,7 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), selectedGroup.id)
 
         // Sync Events
         SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onSyncGroup(it) }
@@ -107,7 +107,6 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         SocketHandler.subscribe(WEvent.ON_DELETE_TASK) { onDeleteTask(it) }
 
         // Trigger sync group
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(selectedGroup.id))
         SocketHandler.emit(WEvent.FIND_GROUP, GroupId(selectedGroup.id))
     }
 
@@ -162,7 +161,6 @@ class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         if (isAdded)
             requireActivity().runOnUiThread {
                 if (isUserLeaving) {
-                    SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(selectedGroup.id))
                     SocketHandler.disconnect()
                     groupViewModel.delete(selectedGroup)
                     findNavController().navigateUp()

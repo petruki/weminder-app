@@ -1,6 +1,5 @@
 package com.weminder.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.weminder.data.Group
 

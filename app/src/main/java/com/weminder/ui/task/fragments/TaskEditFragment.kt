@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import com.weminder.api.SocketHandler
 import com.weminder.api.WEvent
 import com.weminder.api.dto.Error
-import com.weminder.api.dto.GroupId
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskEditBinding
 import com.weminder.ui.task.TaskViewModel
@@ -71,8 +70,7 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
+        SocketHandler.initSocket(requireContext(), args.groupId)
 
         SocketHandler.subscribe(WEvent.ON_CREATE_TASK) { onCreateTask(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
@@ -82,7 +80,6 @@ class TaskEditFragment : Fragment() {
     // Socket Events
 
     private fun onCreateTask(arg: Array<Any>) {
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupId))
         if (isAdded)
             requireActivity().runOnUiThread {
                 val task = SocketHandler.getDTO(Task::class.java, arg)
@@ -95,7 +92,6 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun onUpdateTask(arg: Array<Any>) {
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupId))
         if (isAdded)
             requireActivity().runOnUiThread {
                 val task = SocketHandler.getDTO(Task::class.java, arg)

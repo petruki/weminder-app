@@ -65,7 +65,7 @@ class TaskDetailFragment : Fragment() {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), args.groupId)
 
         // Sync Events
         SocketHandler.subscribe(WEvent.ON_GET_TASK) { onSyncTask(it) }
@@ -76,7 +76,6 @@ class TaskDetailFragment : Fragment() {
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError(it) }
 
         // Triggers sync task
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
         SocketHandler.emit(WEvent.GET_TASK, TaskId(args.task.id))
     }
 

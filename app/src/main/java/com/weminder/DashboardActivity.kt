@@ -81,7 +81,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(this)
+        SocketHandler.initSocket(this, "")
         SocketHandler.subscribe(WEvent.ON_ME) { onMe(it) }
         SocketHandler.emit(WEvent.ME, null)
     }

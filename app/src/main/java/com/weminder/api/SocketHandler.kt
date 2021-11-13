@@ -17,10 +17,10 @@ object SocketHandler {
     private lateinit var socket: Socket
 
     @Synchronized
-    fun initSocket(context: Context) {
+    fun initSocket(context: Context, channel: String) {
         try {
             val opts = IO.Options()
-            opts.query = "auth=${AppUtils.getUser(context, USER_ID)}"
+            opts.query = "auth=${AppUtils.getUser(context, USER_ID)}&channel=${channel}"
             socket = IO.socket(BuildConfig.API_URL, opts)
         } catch (e: URISyntaxException) {
             e.printStackTrace()

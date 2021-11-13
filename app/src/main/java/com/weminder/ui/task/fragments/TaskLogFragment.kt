@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.weminder.api.SocketHandler
 import com.weminder.api.WEvent
-import com.weminder.api.dto.GroupId
 import com.weminder.api.dto.LogMessage
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskLogBinding
@@ -49,10 +48,9 @@ class TaskLogFragment : Fragment() {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), args.groupId)
         SocketHandler.subscribe(WEvent.ON_UPDATE_TASK) { onUpdateTask(it) }
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError() }
-        SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(args.groupId))
     }
 
     // Socket Events
@@ -64,7 +62,6 @@ class TaskLogFragment : Fragment() {
                 taskViewModel.update(task)
                 Toast.makeText(context, "Log added", Toast.LENGTH_SHORT).show()
 
-                SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(args.groupId))
                 SocketHandler.getClient().disconnect()
                 findNavController().navigateUp()
             }

@@ -26,7 +26,7 @@ class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), "")
     }
 
     override fun onCreateView(

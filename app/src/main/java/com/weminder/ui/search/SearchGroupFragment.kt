@@ -46,7 +46,6 @@ class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
                 if (group != null) {
                     Toast.makeText(requireActivity(), "You already joined this group", Toast.LENGTH_SHORT).show()
                 } else {
-                    SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(groupSelected.id))
                     SocketHandler.emit(WEvent.JOIN_GROUP, GroupId(groupSelected.id))
                 }
             })
@@ -77,7 +76,7 @@ class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), "")
         SocketHandler.subscribe(WEvent.ON_FIND_GROUP) { onFindGroup(it) }
         SocketHandler.subscribe(WEvent.ON_JOIN_GROUP) { onJoinGroup(it) }
     }

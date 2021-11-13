@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import com.weminder.api.SocketHandler
 import com.weminder.api.WEvent
 import com.weminder.api.dto.Error
-import com.weminder.api.dto.GroupId
 import com.weminder.data.Group
 import com.weminder.databinding.FragmentGroupEditBinding
 import com.weminder.ui.group.GroupViewModel
@@ -55,7 +54,6 @@ class GroupEditFragment : Fragment() {
             if (group.id.isEmpty()) {
                 SocketHandler.emit(WEvent.CREATE_GROUP, group)
             } else {
-                SocketHandler.emit(WEvent.JOIN_ROOM, GroupId(group.id))
                 SocketHandler.emit(WEvent.UPDATE_GROUP, group)
             }
         } else
@@ -67,7 +65,7 @@ class GroupEditFragment : Fragment() {
     }
 
     private fun setupSocket() {
-        SocketHandler.initSocket(requireContext())
+        SocketHandler.initSocket(requireContext(), group.id)
         SocketHandler.subscribe(WEvent.ON_CREATE_GROUP) { onCreateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_UPDATE_GROUP) { onUpdateGroup(it) }
         SocketHandler.subscribe(WEvent.ON_ERROR) { onError(it) }
@@ -88,7 +86,6 @@ class GroupEditFragment : Fragment() {
     }
 
     private fun onUpdateGroup(arg: Array<Any>) {
-        SocketHandler.emit(WEvent.LEAVE_ROOM, GroupId(group.id))
         if (isAdded)
             requireActivity().runOnUiThread {
                 val group = SocketHandler.getDTO(Group::class.java, arg)
