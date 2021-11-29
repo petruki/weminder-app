@@ -24,6 +24,9 @@ import com.weminder.utils.AppUtils
 import com.weminder.utils.USER_NAME
 import kotlinx.android.synthetic.main.nav_header_dashboard.*
 
+/**
+ * Displays the main view after user is logged into the app.
+ */
 class DashboardActivity : AppCompatActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
@@ -85,6 +88,8 @@ class DashboardActivity : AppCompatActivity() {
         SocketHandler.subscribe(WEvent.ON_ME) { onMe(it) }
         SocketHandler.emit(WEvent.ME, null)
     }
+
+    // Socket Events
 
     private fun onMe(arg: Array<Any>) {
         this.runOnUiThread {

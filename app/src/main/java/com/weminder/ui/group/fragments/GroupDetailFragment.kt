@@ -28,6 +28,9 @@ import kotlinx.android.synthetic.main.group_detail_header.view.*
 import kotlinx.android.synthetic.main.group_detail_users.view.*
 import kotlin.properties.Delegates
 
+/**
+ * Fragment: fragment_group_detail.xml
+ */
 class GroupDetailFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private val groupViewModel: GroupViewModel by viewModels()

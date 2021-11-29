@@ -17,6 +17,9 @@ import com.weminder.databinding.FragmentTaskLogBinding
 import com.weminder.ui.task.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_task_log.*
 
+/**
+ * Fragment: fragment_task_log.xml
+ */
 class TaskLogFragment : Fragment() {
 
     private val taskViewModel: TaskViewModel by viewModels()

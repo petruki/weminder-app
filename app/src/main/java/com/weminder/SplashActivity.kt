@@ -9,6 +9,13 @@ import com.weminder.utils.AppUtils
 import com.weminder.utils.USER_ID
 import kotlinx.android.synthetic.main.activity_splash.*
 
+/**
+ * Starter Activity
+ *
+ * It verifies if user is already registered.
+ * If device is connected to the Internet, it will delay by 2 seconds,
+ * Otherwise, the app will automatically redirect to the Dashboard Activity
+ */
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

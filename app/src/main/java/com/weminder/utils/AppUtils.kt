@@ -6,10 +6,16 @@ import android.widget.Toast
 import com.weminder.R
 import com.weminder.data.User
 
+/**
+ * Utilities class
+ */
 class AppUtils {
 
     companion object {
 
+        /**
+         * Verifies if device has connectivity with Internet
+         */
         fun isInternetAvailable(context: Context): Boolean {
             var result = false
             val connectivityManager =
@@ -28,11 +34,17 @@ class AppUtils {
             return result
         }
 
+        /**
+         * Display dialog that service cannot be used offline
+         */
         fun showUnavailable(context: Context): Boolean {
             Toast.makeText(context, "Cannot perform this operation offline", Toast.LENGTH_SHORT).show()
             return false
         }
 
+        /**
+         * Update user credentials
+         */
         fun updateUser(context: Context, user: User) {
             val sharedPref = context.getSharedPreferences(
                 context.getString(R.string.app_preferences_file_key), Context.MODE_PRIVATE)
@@ -44,6 +56,9 @@ class AppUtils {
             }
         }
 
+        /**
+         * Return user credential
+         */
         fun getUser(context: Context, key: String): String {
             val sharedPref = context.getSharedPreferences(
                 context.getString(R.string.app_preferences_file_key), Context.MODE_PRIVATE)

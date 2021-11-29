@@ -9,6 +9,11 @@ import com.weminder.ui.login.LoginPageAdapter
 import com.weminder.ui.login.fragments.LoginSignInFragment
 import com.weminder.ui.login.fragments.LoginSignUpFragment
 
+/**
+ * Sign Up/In activity
+ * It displays when the app does not have any user registered,
+ * Or user has logged out from their account.
+ */
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

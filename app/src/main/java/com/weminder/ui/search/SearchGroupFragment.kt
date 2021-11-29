@@ -20,6 +20,9 @@ import com.weminder.ui.group.GroupViewModel
 import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_search_group.*
 
+/**
+ * Fragment: fragment_search_group.xml
+ */
 class SearchGroupFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
     private val searchViewModel: SearchGroupViewModel by viewModels()

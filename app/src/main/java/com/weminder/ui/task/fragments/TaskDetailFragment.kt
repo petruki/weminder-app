@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.weminder.api.SocketHandler
 import com.weminder.api.WEvent
 import com.weminder.api.dto.Error
-import com.weminder.api.dto.GroupId
 import com.weminder.api.dto.TaskId
 import com.weminder.data.Task
 import com.weminder.databinding.FragmentTaskDetailBinding
@@ -24,6 +23,9 @@ import kotlinx.android.synthetic.main.task_detail_content.view.*
 import kotlinx.android.synthetic.main.task_detail_controls.view.*
 import kotlinx.android.synthetic.main.task_detail_header.view.*
 
+/**
+ * Fragment: fragment_task_detail.xml
+ */
 class TaskDetailFragment : Fragment() {
 
     private val taskViewModel: TaskViewModel by viewModels()

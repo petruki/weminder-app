@@ -17,6 +17,9 @@ import com.weminder.ui.group.GroupListAdapter
 import com.weminder.ui.group.GroupViewModel
 import kotlinx.android.synthetic.main.bottom_bar_layout.*
 
+/**
+ * Fragment: fragment_hone.xml
+ */
 class HomeFragment : Fragment(), GroupListAdapter.OnItemClickListener {
 
     private val groupViewModel: GroupViewModel by viewModels()

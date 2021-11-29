@@ -1,5 +1,8 @@
 package com.weminder.api
 
+/**
+ * Available events that can be sent/subscribed
+ */
 enum class WEvent(val arg: String) {
     ME("me"),
     ON_ME("on_me"),

@@ -53,6 +53,9 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
         })
     }
 
+    /**
+     * Clean local storage
+     */
     fun wipeDb() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

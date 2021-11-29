@@ -14,6 +14,9 @@ import com.weminder.ui.login.LoginViewModel
 import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_login_sign_in.*
 
+/**
+ * Fragment: fragment_login_sing_in.xml
+ */
 class LoginSignInFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by viewModels()

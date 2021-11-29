@@ -18,6 +18,9 @@ import com.weminder.ui.group.GroupViewModel
 import com.weminder.utils.AppUtils
 import kotlinx.android.synthetic.main.fragment_group_edit.*
 
+/**
+ * Fragment: fragment_group_edit.xml
+ */
 class GroupEditFragment : Fragment() {
 
     private val groupViewModel: GroupViewModel by viewModels()

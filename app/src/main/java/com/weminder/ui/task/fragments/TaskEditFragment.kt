@@ -19,6 +19,9 @@ import com.weminder.utils.AppUtils
 import com.weminder.utils.TASK_STATUS
 import kotlinx.android.synthetic.main.fragment_task_edit.*
 
+/**
+ * Fragment: fragment_task_edit.xml
+ */
 class TaskEditFragment : Fragment() {
 
     private val taskViewModel: TaskViewModel by viewModels()

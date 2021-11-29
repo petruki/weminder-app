@@ -20,6 +20,9 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
     var groupTasks: MutableLiveData<List<Task>> = MutableLiveData<List<Task>>()
     var groupUsers: MutableLiveData<List<User>> = MutableLiveData<List<User>>()
 
+    /**
+     * Retrieve all groups from local storage
+     */
     fun getAllGroups() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -28,6 +31,9 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Synchronize API groups with local groups
+     */
     fun syncAllGroups(remoteGroups: List<Group>) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -59,6 +65,9 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Synchronize API tasks with local tasks
+     */
     fun syncAllGroupTasks(remoteTasks: List<Task>, groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -90,6 +99,9 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Synchronize API users with local users
+     */
     fun syncAllGroupUsers(remoteUsers: List<User>, groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -156,6 +168,9 @@ class GroupViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Update selected group and underlying objects (tasks,users)
+     */
     fun selectGroup(groupId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
